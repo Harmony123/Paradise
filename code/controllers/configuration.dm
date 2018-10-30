@@ -88,7 +88,6 @@
 	var/githuburl = "http://example.org"
 	var/donationsurl = "http://example.org"
 	var/repositoryurl = "http://example.org"
-	var/discordurl = "http://example.org"
 	// Hispania Configs
 	var/discordurl = "http://example.org"
 	var/ryzorbot = "http://example.org"
@@ -405,11 +404,11 @@
 
 				if("githuburl")
 					config.githuburl = value
-				
+
 				if("discordurl")
 					config.discordurl = value
 
-				
+
 				if("donationsurl")
 					config.donationsurl = value
 				if("ryzorbot")
