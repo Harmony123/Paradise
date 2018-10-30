@@ -22,6 +22,7 @@
 	var/log_hrefs = 0					// logs all links clicked in-game. Could be used for debugging and tracking down exploits
 	var/sql_enabled = 0					// for sql switching
 	var/allow_admin_ooccolor = 0		// Allows admins with relevant permissions to have their own ooc colour
+	var/pregame_timestart = 240			// Time it takes for the server to start the game
 	var/allow_vote_restart = 0 			// allow votes to restart
 	var/allow_vote_mode = 0				// allow votes to change mode
 	var/vote_delay = 6000				// minimum time between voting sessions (deciseconds, 10 minute default)
@@ -84,6 +85,10 @@
 	var/wikiurl = "http://example.org"
 	var/forumurl = "http://example.org"
 	var/rulesurl = "http://example.org"
+	var/githuburl = "http://example.org"
+	var/donationsurl = "http://example.org"
+	var/repositoryurl = "http://example.org"
+	var/discordurl = "http://example.org"
 	// Hispania Configs
 	var/discordurl = "http://example.org"
 	var/ryzorbot = "http://example.org"
@@ -335,6 +340,9 @@
 				if("allow_admin_ooccolor")
 					config.allow_admin_ooccolor = 1
 
+				if("pregame_timestart")
+					config.pregame_timestart = text2num(value)
+
 				if("allow_vote_restart")
 					config.allow_vote_restart = 1
 
@@ -395,11 +403,20 @@
 				if("rulesurl")
 					config.rulesurl = value
 
+				if("githuburl")
+					config.githuburl = value
+				
 				if("discordurl")
 					config.discordurl = value
 
+				
+				if("donationsurl")
+					config.donationsurl = value
 				if("ryzorbot")
 					config.ryzorbot = value
+
+				if("repositoryurl")
+					config.repositoryurl = value
 
 				if("guest_jobban")
 					config.guest_jobban = 1
