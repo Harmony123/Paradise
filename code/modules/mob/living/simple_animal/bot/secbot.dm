@@ -175,7 +175,7 @@ Auto Patrol: []"},
 		mode = BOT_HUNT
 
 /mob/living/simple_animal/bot/secbot/attack_hand(mob/living/carbon/human/H)
-	if(H.a_intent == INTENT_HARM || H.a_intent == INTENT_DISARM)
+	if(H.a_intent == INTENT_HARM)
 		retaliate(H)
 	return ..()
 
@@ -439,7 +439,9 @@ Auto Patrol: []"},
 	if(prob(50))
 		new /obj/item/robot_parts/l_arm(Tsec)
 
-	do_sparks(3, 1, src)
+	var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+	s.set_up(3, 1, src)
+	s.start()
 
 	new /obj/effect/decal/cleanable/blood/oil(loc)
 	..()

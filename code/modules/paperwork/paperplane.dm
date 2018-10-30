@@ -110,11 +110,10 @@
 		H.emote("scream")
 
 /obj/item/paper/AltClick(mob/user, obj/item/I)
-	if(ishuman(user))
-		var/mob/living/carbon/human/H = user
-		I = H.is_in_hands(/obj/item/paper)
-		if(I)
-			ProcFoldPlane(H, I)
+	var/mob/living/carbon/human/H = user
+	I = H.is_in_hands(/obj/item/paper)
+	if(I)
+		ProcFoldPlane(H, I)
 	else
 		..()
 

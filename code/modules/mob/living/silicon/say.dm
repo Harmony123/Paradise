@@ -1,9 +1,9 @@
-/mob/living/silicon/handle_message_mode(message_mode, message, verb, speaking, used_radios)
+/mob/living/silicon/handle_message_mode(message_mode, message, verb, speaking, used_radios, alt_name)
 	log_say(message, src)
 	if(..())
 		return 1
 
-/mob/living/silicon/robot/handle_message_mode(message_mode, message, verb, speaking, used_radios)
+/mob/living/silicon/robot/handle_message_mode(message_mode, message, verb, speaking, used_radios, alt_name)
 	if(..())
 		return 1
 	if(message_mode)
@@ -15,7 +15,7 @@
 			message_mode = null
 		return radio.talk_into(src,message,message_mode,verb,speaking)
 
-/mob/living/silicon/ai/handle_message_mode(message_mode, message, verb, speaking, used_radios)
+/mob/living/silicon/ai/handle_message_mode(message_mode, message, verb, speaking, used_radios, alt_name)
 	if(..())
 		return 1
 	if(message_mode == "department")
@@ -30,11 +30,11 @@
 			message_mode = null
 		return aiRadio.talk_into(src,message,message_mode,verb,speaking)
 
-/mob/living/silicon/pai/handle_message_mode(message_mode, message, verb, speaking, used_radios)
+/mob/living/silicon/pai/handle_message_mode(message_mode, message, verb, speaking, used_radios, alt_name)
 	if(..())
 		return 1
 	else if(message_mode == "whisper")
-		whisper_say(message, speaking)
+		whisper_say(message, speaking, alt_name)
 		return 1
 	else if(message_mode)
 		if(message_mode == "general")

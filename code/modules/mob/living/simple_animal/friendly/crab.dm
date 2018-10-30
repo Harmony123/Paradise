@@ -67,15 +67,22 @@
 					MED.amount -= 1
 					if(MED.amount <= 0)
 						qdel(MED)
-					user.visible_message("<span class='notice'>[user] applies the [MED] on [src]</span>")
+					for(var/mob/M in viewers(src, null))
+						if((M.client && !( M.blinded )))
+							M.show_message("<span class='notice'>[user] applies the [MED] on [src]</span>")
 		else
 			to_chat(user, "<span class='notice'>this [src] is dead, medical items won't bring it back to life.</span>")
 	else
 		if(O.force)
 			health -= O.force
-			visible_message("<span class='boldwarning'>[src] has been attacked with the [O] by [user]. </span>")
+			for(var/mob/M in viewers(src, null))
+				if((M.client && !( M.blinded )))
+					M.show_message("<span class='boldwarning'>[src] has been attacked with the [O] by [user]. </span>")
 		else
-			user.visible_message("<span class='warning'>[user] gently taps [src] with the [O]. </span>","<span class='warning'>This weapon is ineffective, it does no damage.</span>")
+			to_chat(usr, "<span class='warning'>This weapon is ineffective, it does no damage.</span>")
+			for(var/mob/M in viewers(src, null))
+				if((M.client && !( M.blinded )))
+					M.show_message("<span class='warning'>[user] gently taps [src] with the [O]. </span>")
 
 /mob/living/simple_animal/crab/Topic(href, href_list)
 	if(usr.stat) return

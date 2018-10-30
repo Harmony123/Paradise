@@ -37,7 +37,7 @@
 	doomsday_device = DOOM
 	doomsday_device.start()
 	verbs -= /mob/living/silicon/ai/proc/nuke_station
-	for(var/obj/item/pinpointer/point in GLOB.pinpointer_list)
+	for(var/obj/item/pinpointer/point in pinpointer_list)
 		for(var/mob/living/silicon/ai/A in ai_list)
 			if((A.stat != DEAD) && A.nuking)
 				point.the_disk = A //The pinpointer now tracks the AI core
@@ -56,19 +56,19 @@
 	var/announced = 0
 
 /obj/machinery/doomsday_device/Destroy()
-	GLOB.fast_processing -= src
-	SSshuttle.emergencyNoEscape = 0
-	if(SSshuttle.emergency.mode == SHUTTLE_STRANDED)
-		SSshuttle.emergency.mode = SHUTTLE_DOCKED
-		SSshuttle.emergency.timer = world.time
+	fast_processing -= src
+	shuttle_master.emergencyNoEscape = 0
+	if(shuttle_master.emergency.mode == SHUTTLE_STRANDED)
+		shuttle_master.emergency.mode = SHUTTLE_DOCKED
+		shuttle_master.emergency.timer = world.time
 		priority_announcement.Announce("Hostile environment resolved. You have 3 minutes to board the Emergency Shuttle.", "Priority Announcement", 'sound/AI/shuttledock.ogg')
 	return ..()
 
 /obj/machinery/doomsday_device/proc/start()
 	detonation_timer = world.time + default_timer
 	timing = 1
-	GLOB.fast_processing += src
-	SSshuttle.emergencyNoEscape = 1
+	fast_processing += src
+	shuttle_master.emergencyNoEscape = 1
 
 /obj/machinery/doomsday_device/proc/seconds_remaining()
 	. = max(0, (round(detonation_timer - world.time) / 10))
@@ -77,14 +77,14 @@
 	var/turf/T = get_turf(src)
 	if(!T || !is_station_level(T.z))
 		minor_announcement.Announce("DOOMSDAY DEVICE OUT OF STATION RANGE, ABORTING", "ERROR ER0RR $R0RRO$!R41.%%!!(%$^^__+ @#F0E4", 'sound/misc/notice1.ogg')
-		SSshuttle.emergencyNoEscape = 0
-		if(SSshuttle.emergency.mode == SHUTTLE_STRANDED)
-			SSshuttle.emergency.mode = SHUTTLE_DOCKED
-			SSshuttle.emergency.timer = world.time
+		shuttle_master.emergencyNoEscape = 0
+		if(shuttle_master.emergency.mode == SHUTTLE_STRANDED)
+			shuttle_master.emergency.mode = SHUTTLE_DOCKED
+			shuttle_master.emergency.timer = world.time
 			priority_announcement.Announce("Hostile environment resolved. You have 3 minutes to board the Emergency Shuttle.", "Priority Announcement", 'sound/AI/shuttledock.ogg')
 		qdel(src)
 	if(!timing)
-		GLOB.fast_processing -= src
+		fast_processing -= src
 		return
 	var/sec_left = seconds_remaining()
 	if(sec_left <= 0)
@@ -99,10 +99,10 @@
 		announced = max(0, announced-1)
 
 /obj/machinery/doomsday_device/proc/detonate(z_level = 1)
-	for(var/mob/M in GLOB.player_list)
+	for(var/mob/M in player_list)
 		M << 'sound/machines/Alarm.ogg'
 	sleep(100)
-	for(var/mob/living/L in GLOB.mob_list)
+	for(var/mob/living/L in mob_list)
 		var/turf/T = get_turf(L)
 		if(!T || T.z != z_level)
 			continue
@@ -131,7 +131,7 @@
 		return
 
 	src.verbs -= /mob/living/silicon/ai/proc/upgrade_turrets
-	for(var/obj/machinery/porta_turret/turret in GLOB.machines)
+	for(var/obj/machinery/porta_turret/turret in machines)
 		var/turf/T = get_turf(turret)
 		if(is_station_level(T.z))
 			turret.health += 30
@@ -156,7 +156,7 @@
 	if(stat)
 		return
 
-	for(var/obj/machinery/door/D in GLOB.airlocks)
+	for(var/obj/machinery/door/D in airlocks)
 		if(!is_station_level(D.z))
 			continue
 		INVOKE_ASYNC(D, /obj/machinery/door.proc/hostile_lockdown, src)
@@ -185,15 +185,17 @@
 	set name = "Destroy RCDs"
 	set desc = "Detonate all RCDs on the station, while sparing onboard cyborg RCDs."
 
-	if(stat || malf_cooldown > world.time)
+	if(stat || malf_cooldown)
 		return
 
-	for(var/obj/item/rcd/RCD in GLOB.rcd_list)
+	for(var/obj/item/rcd/RCD in rcd_list)
 		if(!istype(RCD, /obj/item/rcd/borg)) //Ensures that cyborg RCDs are spared.
 			RCD.detonate_pulse()
 
 	to_chat(src, "<span class='danger'>RCD detonation pulse emitted.</span>")
-	malf_cooldown = world.time + 100
+	malf_cooldown = 1
+	spawn(100)
+		malf_cooldown = 0
 
 
 /datum/AI_Module/large/mecha_domination
@@ -237,7 +239,7 @@
 	if(stat)
 		return
 
-	for(var/obj/machinery/firealarm/F in GLOB.machines)
+	for(var/obj/machinery/firealarm/F in machines)
 		if(!is_station_level(F.z))
 			continue
 		F.emagged = 1
@@ -262,7 +264,7 @@
 	if(stat)
 		return
 
-	for(var/obj/machinery/alarm/AA in GLOB.machines)
+	for(var/obj/machinery/alarm/AA in machines)
 		if(!is_station_level(AA.z))
 			continue
 		AA.emagged = 1
@@ -279,7 +281,7 @@
 
 	power_type = /mob/living/silicon/ai/proc/overload_machine
 
-/mob/living/silicon/ai/proc/overload_machine(obj/machinery/M in GLOB.machines)
+/mob/living/silicon/ai/proc/overload_machine(obj/machinery/M in machines)
 	set name = "Overload Machine"
 	set category = "Malfunction"
 
@@ -312,7 +314,7 @@
 	power_type = /mob/living/silicon/ai/proc/override_machine
 
 
-/mob/living/silicon/ai/proc/override_machine(obj/machinery/M in GLOB.machines)
+/mob/living/silicon/ai/proc/override_machine(obj/machinery/M in machines)
 	set name = "Override Machine"
 	set category = "Malfunction"
 
@@ -428,7 +430,7 @@
 	for(var/datum/AI_Module/small/blackout/blackout in current_modules)
 		if(blackout.uses > 0)
 			blackout.uses --
-			for(var/obj/machinery/power/apc/apc in GLOB.apcs)
+			for(var/obj/machinery/power/apc/apc in apcs)
 				if(prob(30*apc.overload))
 					apc.overload_lighting()
 				else
@@ -452,7 +454,7 @@
 	set name = "Reactivate Cameranet"
 	set category = "Malfunction"
 
-	if(stat || malf_cooldown > world.time)
+	if(stat || malf_cooldown)
 		return
 	var/fixedcams = 0 //Tells the AI how many cams it fixed. Stats are fun.
 
@@ -475,7 +477,9 @@
 				break
 	to_chat(src, "<span class='notice'>Diagnostic complete! Operations completed: [fixedcams].</span>")
 
-	malf_cooldown = world.time + 30
+	malf_cooldown = 1
+	spawn(30) //Lag protection
+		malf_cooldown = 0
 
 
 /datum/AI_Module/large/upgrade_cameras

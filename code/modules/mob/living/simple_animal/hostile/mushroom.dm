@@ -22,7 +22,7 @@
 	faction = list("mushroom")
 	environment_smash = 0
 	stat_attack = 2
-	mouse_opacity = MOUSE_OPACITY_ICON
+	mouse_opacity = 1
 	speed = 1
 	ventcrawler = 2
 	robust_searching = 1
@@ -91,10 +91,7 @@
 	UpdateMushroomCap()
 
 /mob/living/simple_animal/hostile/mushroom/death(gibbed)
-	// Only execute the below if we successfully died
-	. = ..(gibbed)
-	if(!.)
-		return FALSE
+	..()
 	UpdateMushroomCap()
 
 /mob/living/simple_animal/hostile/mushroom/proc/UpdateMushroomCap()

@@ -11,17 +11,13 @@
 	w_class = WEIGHT_CLASS_TINY
 	flags = NOBLUDGEON
 	var/mode = WAND_OPEN
-	var/region_access = list()
-	var/additional_access = list()
+	var/region_access = 1 //See access.dm
 	var/obj/item/card/id/ID
 
 /obj/item/door_remote/New()
 	..()
 	ID = new /obj/item/card/id
-	for(var/region in region_access)
-		ID.access += get_region_accesses(region)
-	ID.access += additional_access
-	ID.access = uniquelist(ID.access)	//remove duplicates
+	ID.access = get_region_accesses(region_access)
 
 /obj/item/door_remote/Destroy()
 	QDEL_NULL(ID)
@@ -74,49 +70,48 @@
 	name = "omni door remote"
 	desc = "This control wand can access any door on the station."
 	icon_state = "gangtool-yellow"
-	region_access = list(REGION_ALL)
+	region_access = REGION_ALL
 
 /obj/item/door_remote/captain
 	name = "command door remote"
 	icon_state = "gangtool-yellow"
-	region_access = list(REGION_COMMAND)
+	region_access = REGION_COMMAND
 
 /obj/item/door_remote/chief_engineer
 	name = "engineering door remote"
 	icon_state = "gangtool-orange"
-	region_access = list(REGION_ENGINEERING)
+	region_access = REGION_ENGINEERING
 
 /obj/item/door_remote/research_director
 	name = "research door remote"
 	icon_state = "gangtool-purple"
-	region_access = list(REGION_RESEARCH)
+	region_access = REGION_RESEARCH
 
 /obj/item/door_remote/head_of_security
 	name = "security door remote"
 	icon_state = "gangtool-red"
-	region_access = list(REGION_SECURITY)
+	region_access = REGION_SECURITY
 
 /obj/item/door_remote/quartermaster
 	name = "supply door remote"
 	icon_state = "gangtool-green"
-	region_access = list(REGION_SUPPLY)
+	region_access = REGION_SUPPLY
 
 /obj/item/door_remote/chief_medical_officer
 	name = "medical door remote"
 	icon_state = "gangtool-blue"
-	region_access = list(REGION_MEDBAY)
+	region_access = REGION_MEDBAY
 
 /obj/item/door_remote/civillian
 	name = "civillian door remote"
 	icon_state = "gangtool-white"
-	region_access = list(REGION_GENERAL, REGION_SUPPLY)
-	additional_access = list(access_hop)
+	region_access = REGION_GENERAL
 
 /obj/item/door_remote/centcomm
 	name = "centcomm door remote"
 	desc = "High-ranking NT officials only."
 	icon_state = "gangtool-blue"
-	region_access = list(REGION_CENTCOMM)
+	region_access = REGION_CENTCOMM
 
 #undef WAND_OPEN
 #undef WAND_BOLT

@@ -406,7 +406,9 @@
 			if(lasercolor == "r")
 				new /obj/item/clothing/suit/redtag(Tsec)
 
-	do_sparks(3, 1, src)
+	var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+	s.set_up(3, 1, src)
+	s.start()
 
 	new /obj/effect/decal/cleanable/blood/oil(loc)
 	..()

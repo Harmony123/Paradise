@@ -14,10 +14,12 @@
 		reset_perspective(null)
 		unset_machine()
 
-	updatehealth("life")
-	if(stat == DEAD)
-		return
+	updatehealth()
 	update_gravity(mob_has_gravity())
+
+	if(health <= config.health_threshold_dead)
+		death()
+		return 0
 
 	if(!eyeobj || QDELETED(eyeobj) || !eyeobj.loc)
 		view_core()
@@ -42,15 +44,21 @@
 	var/area/my_area = get_area(src)
 
 	if(!lacks_power())
-		if(aiRestorePowerRoutine > 1)
-			update_blind_effects()
+		if(aiRestorePowerRoutine == 2)
+			to_chat(src, "Alert cancelled. Power has been restored without our assistance.")
 			aiRestorePowerRoutine = 0
+			clear_fullscreen("blind")
 			update_sight()
-			to_chat(src, "Alert cancelled. Power has been restored[aiRestorePowerRoutine == 2 ? "without our assistance" : ""].")
+		else if(aiRestorePowerRoutine == 3)
+			to_chat(src, "Alert cancelled. Power has been restored.")
+			aiRestorePowerRoutine = 0
+			clear_fullscreen("blind")
+			update_sight()
 	else
+		overlay_fullscreen("blind", /obj/screen/fullscreen/blind)
+
 		if(lacks_power())
 			if(!aiRestorePowerRoutine)
-				update_blind_effects()
 				aiRestorePowerRoutine = 1
 				update_sight()
 				to_chat(src, "<span class='danger'>You have lost power!</span>")
@@ -59,14 +67,13 @@
 
 				spawn(20)
 					to_chat(src, "Backup battery online. Scanners, camera, and radio interface offline. Beginning fault-detection.")
-					end_multicam()
 					sleep(50)
 					my_area = get_area(src)
 					T = get_turf(src)
 					if(!lacks_power())
 						to_chat(src, "Alert cancelled. Power has been restored without our assistance.")
 						aiRestorePowerRoutine = 0
-						update_blind_effects()
+						clear_fullscreen("blind")
 						update_sight()
 						return
 					to_chat(src, "Fault confirmed: missing external power. Shutting down main control system to save power.")
@@ -105,7 +112,7 @@
 						if(!lacks_power())
 							to_chat(src, "Alert cancelled. Power has been restored without our assistance.")
 							aiRestorePowerRoutine = 0
-							update_blind_effects()
+							clear_fullscreen("blind")
 							update_sight()
 							return
 
@@ -136,13 +143,12 @@
 	if(get_nations_mode())
 		process_nations_ai()
 
-/mob/living/silicon/ai/updatehealth(reason = "none given")
+/mob/living/silicon/ai/updatehealth()
 	if(status_flags & GODMODE)
 		health = 100
 		stat = CONSCIOUS
 	else
 		health = 100 - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss()
-		update_stat("updatehealth([reason])")
 		diag_hud_set_status()
 		diag_hud_set_health()
 

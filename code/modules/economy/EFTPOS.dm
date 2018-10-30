@@ -49,7 +49,7 @@
 	if(!location)
 		return
 
-	for(var/obj/machinery/computer/account_database/DB in GLOB.machines)
+	for(var/obj/machinery/computer/account_database/DB in machines)
 		if(DB.z == location.z)
 			linked_db = DB
 			break

@@ -26,7 +26,7 @@
 	if(issilicon(L))
 		return
 	for(var/obj/structure/O in L.loc)
-		if(O.density || O.buckled_mob && istype(O, /obj/structure/bed))
+		if(O.density || O.buckled_mob && istype(O, /obj/structure/stool/bed))
 			return
 	if(L.loc.density)
 		return

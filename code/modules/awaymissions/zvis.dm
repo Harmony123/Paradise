@@ -159,12 +159,12 @@
 
 /obj/effect/view_portal/New()
 	..()
-	GLOB.portals += src
+	portals += src
 
 /obj/effect/view_portal/Initialize()
 	..()
 	if(id)
-		for(var/obj/effect/view_portal/O in GLOB.portals)
+		for(var/obj/effect/view_portal/O in portals)
 			if(id == O.id && O != src && can_link(O))
 				other = O
 				O.other = src
@@ -174,7 +174,7 @@
 					return
 
 /obj/effect/view_portal/Destroy()
-	GLOB.portals -= src
+	portals -= src
 	return ..()
 
 /obj/effect/view_portal/proc/can_link(obj/effect/view_portal/P)

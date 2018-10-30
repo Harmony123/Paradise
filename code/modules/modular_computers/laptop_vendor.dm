@@ -253,7 +253,6 @@ obj/machinery/lapvend/attackby(obj/item/I, mob/user)
 				fabricated_laptop.forceMove(loc)
 				fabricated_laptop = null
 			else if((devtype == 2) && fabricated_tablet)
-				fabricated_tablet.update_icon()
 				fabricated_tablet.forceMove(loc)
 				fabricated_tablet = null
 			atom_say("Enjoy your new product!")

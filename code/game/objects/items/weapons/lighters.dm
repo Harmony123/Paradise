@@ -24,7 +24,8 @@
 	icon_on = "zippoon"
 	icon_off = "zippo"
 
-/obj/item/lighter/random/New()
+/obj/item/lighter/random
+	New()
 		var/color = pick("r","c","y","g")
 		icon_on = "lighter-[color]-on"
 		icon_off = "lighter-[color]"
@@ -55,6 +56,7 @@
 						var/obj/item/organ/external/affecting = H.get_organ("[user.hand ? "l" : "r" ]_hand")
 						if(affecting.receive_damage( 0, 5 ))		//INFERNO
 							H.UpdateDamageIcon()
+							H.updatehealth()
 					user.visible_message("<span class='notice'>After a few attempts, [user] manages to light the [src], [user.p_they()] however burn[user.p_s()] [user.p_their()] finger in the process.</span>")
 
 			set_light(2)
@@ -182,7 +184,6 @@
 		attack_verb = list("burnt","singed")
 		processing_objects.Add(src)
 		update_icon()
-		return TRUE
 
 /obj/item/match/proc/matchburnout()
 	if(lit)
@@ -196,7 +197,6 @@
 		desc = "A match. This one has seen better days."
 		attack_verb = list("flicked")
 		processing_objects.Remove(src)
-		return TRUE
 
 /obj/item/match/dropped(mob/user)
 	matchburnout()

@@ -65,9 +65,9 @@
 	// Nada
 
 /obj/Destroy()
-	GLOB.machines -= src
+	machines -= src
 	processing_objects -= src
-	GLOB.fast_processing -= src
+	fast_processing -= src
 	SSnanoui.close_uis(src)
 	return ..()
 
@@ -287,14 +287,14 @@ a {
 		return
 	speed_process = TRUE
 	processing_objects.Remove(src)
-	GLOB.fast_processing.Add(src)
+	fast_processing.Add(src)
 
 /obj/proc/makeNormalProcess()
 	if(!speed_process)
 		return
 	speed_process = FALSE
 	processing_objects.Add(src)
-	GLOB.fast_processing.Remove(src)
+	fast_processing.Remove(src)
 
 /obj/vv_get_dropdown()
 	. = ..()

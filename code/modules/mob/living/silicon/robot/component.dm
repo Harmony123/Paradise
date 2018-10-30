@@ -21,9 +21,7 @@
 	src.owner = R
 
 /datum/robot_component/proc/install()
-	go_online()
 /datum/robot_component/proc/uninstall()
-	go_offline()
 
 /datum/robot_component/proc/destroy()
 	if(wrapped)
@@ -36,12 +34,9 @@
 	installed = -1
 	uninstall()
 
-/datum/robot_component/proc/take_damage(brute, electronics, sharp, updating_health = TRUE)
+/datum/robot_component/proc/take_damage(brute, electronics, sharp)
 	if(installed != 1)
 		return
-
-	if(owner && updating_health)
-		owner.updatehealth("component '[src]' take damage")
 
 	brute_damage += brute
 	electronics_damage += electronics
@@ -49,13 +44,10 @@
 	if(brute_damage + electronics_damage >= max_damage)
 		destroy()
 
-/datum/robot_component/proc/heal_damage(brute, electronics, updating_health = TRUE)
+/datum/robot_component/proc/heal_damage(brute, electronics)
 	if(installed != 1)
 		// If it's not installed, can't repair it.
 		return 0
-
-	if(owner && updating_health)
-		owner.updatehealth("component '[src]' heal damage")
 
 	brute_damage = max(0, brute_damage - brute)
 	electronics_damage = max(0, electronics_damage - electronics)
@@ -63,34 +55,12 @@
 /datum/robot_component/proc/is_powered()
 	return (installed == 1) && (brute_damage + electronics_damage < max_damage) && (powered)
 
+
 /datum/robot_component/proc/consume_power()
 	if(toggled == 0)
 		powered = 0
 		return
 	powered = 1
-
-/datum/robot_component/proc/disable()
-	if(!component_disabled)
-		go_offline()
-	component_disabled++
-
-/datum/robot_component/proc/enable()
-	component_disabled--
-	if(!component_disabled)
-		go_online()
-
-/datum/robot_component/proc/toggle()
-	toggled = !toggled
-	if(toggled)
-		go_online()
-	else
-		go_offline()
-
-/datum/robot_component/proc/go_online()
-	return
-
-/datum/robot_component/proc/go_offline()
-	return
 
 /datum/robot_component/armour
 	name = "armour plating"
@@ -102,24 +72,9 @@
 	external_type = /obj/item/robot_parts/robot_component/actuator
 	max_damage = 50
 
-/datum/robot_component/actuator/go_online()
-	owner.update_stat()
-
-/datum/robot_component/actuator/go_offline()
-	owner.update_stat()
-
 /datum/robot_component/cell
 	name = "power cell"
 	max_damage = 50
-
-/datum/robot_component/cell/is_powered()
-	return ..() && owner.cell
-
-/datum/robot_component/cell/go_online()
-	owner.update_stat()
-
-/datum/robot_component/cell/go_offline()
-	owner.update_stat()
 
 /datum/robot_component/cell/destroy()
 	..()
@@ -139,14 +94,6 @@
 	name = "camera"
 	external_type = /obj/item/robot_parts/robot_component/camera
 	max_damage = 40
-
-/datum/robot_component/camera/go_online()
-	owner.update_blind_effects()
-	owner.update_sight()
-
-/datum/robot_component/camera/go_offline()
-	owner.update_blind_effects()
-	owner.update_sight()
 
 /datum/robot_component/diagnosis_unit
 	name = "self-diagnosis unit"
@@ -170,9 +117,9 @@
 
 /mob/living/silicon/robot/proc/disable_component(module_name, duration)
 	var/datum/robot_component/D = get_component(module_name)
-	D.disable()
+	D.component_disabled++
 	spawn(duration)
-		D.enable()
+		D.component_disabled--
 
 // Returns component by it's string name
 /mob/living/silicon/robot/proc/get_component(var/component_name)
@@ -206,8 +153,6 @@
 /obj/item/robot_parts/robot_component/camera
 	name = "camera"
 	icon_state = "camera"
-
-
 
 /obj/item/robot_parts/robot_component/diagnosis_unit
 	name = "diagnosis unit"
@@ -306,10 +251,5 @@
 					to_chat(user, "[capitalize(O.name)]: <font color='red'>[O.damage]</font>")
 			if(!organ_found)
 				to_chat(user, "<span class='warning'>No prosthetics located.</span>")
-
-			if(H.isSynthetic())
-				to_chat(user, "<span class='notice'>Internal Fluid Level:[H.blood_volume]/[H.max_blood]</span>")
-				if(H.bleed_rate)
-					to_chat(user, "<span class='warning'>Warning:External component leak detected!</span>")
 
 	src.add_fingerprint(user)

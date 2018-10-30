@@ -11,9 +11,9 @@
 	layer = RIPPLE_LAYER
 	alpha = 0
 	duration = 3 * SHUTTLE_RIPPLE_TIME
-	mouse_opacity = MOUSE_OPACITY_ICON
+	mouse_opacity = 1
 
 /obj/effect/temp_visual/ripple/New()
 	. = ..()
-	queue_smooth(src)
+	smooth_icon(src)
 	animate(src, alpha=255, time=SHUTTLE_RIPPLE_TIME)

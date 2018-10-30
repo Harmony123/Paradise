@@ -87,11 +87,15 @@
 			var/obj/item/pipe/P = new (loc, pipe_type=p_type, dir=p_dir)
 			P.update()
 			P.add_fingerprint(usr)
-			wait = world.time + 10
+			wait = 1
+			spawn(10)
+				wait = 0
 	if(href_list["makemeter"])
-		if(wait < world.time)
+		if(!wait)
 			new /obj/item/pipe_meter(loc)
-			wait = world.time + 15
+			wait = 1
+			spawn(15)
+				wait = 0
 	if(href_list["makegsensor"])
 		if(!wait)
 			new /obj/item/pipe_gsensor(loc)
@@ -188,10 +192,12 @@
 	usr.set_machine(src)
 	add_fingerprint(usr)
 
-	if(wait < world.time)
+	if(!wait)
 		var/p_type = text2num(href_list["dmake"])
 		var/obj/structure/disposalconstruct/C = new(loc, p_type)
 		if(p_type in list(PIPE_DISPOSALS_BIN, PIPE_DISPOSALS_OUTLET, PIPE_DISPOSALS_CHUTE))
 			C.density = TRUE
 		C.add_fingerprint(usr)
-		wait = world.time + 15
+		wait = 1
+		spawn(15)
+			wait = 0

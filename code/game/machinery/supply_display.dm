@@ -4,8 +4,8 @@
 
 /obj/machinery/status_display/supply_display/update()
 	if(!..() && mode == STATUS_DISPLAY_CUSTOM)
-		if(SSshuttle.supply.mode == SHUTTLE_IDLE)
-			if(is_station_level(SSshuttle.supply.z))
+		if(shuttle_master.supply.mode == SHUTTLE_IDLE)
+			if(is_station_level(shuttle_master.supply.z))
 				message1 = "CARGO"
 				message2 = "Docked"
 			else
@@ -13,7 +13,7 @@
 				message2 = station_time_timestamp("hh:mm")
 		else
 			message1 = "CARGO"
-			message2 = SSshuttle.supply.getTimerStr()
+			message2 = shuttle_master.supply.getTimerStr()
 			if(lentext(message2) > CHARS_PER_LINE)
 				message2 = "Error"
 

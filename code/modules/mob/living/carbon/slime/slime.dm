@@ -67,7 +67,7 @@
 	..()
 
 /mob/living/carbon/slime/Destroy()
-	for(var/obj/machinery/computer/camera_advanced/xenobio/X in GLOB.machines)
+	for(var/obj/machinery/computer/camera_advanced/xenobio/X in machines)
 		if(src in X.stored_slimes)
 			X.stored_slimes -= src
 	return ..()

@@ -46,5 +46,7 @@
 	duration = 80
 
 /obj/effect/temp_visual/teleport_abductor/New()
-	do_sparks(10, 0, loc)
+	var/datum/effect_system/spark_spread/S = new
+	S.set_up(10,0,loc)
+	S.start()
 	..()

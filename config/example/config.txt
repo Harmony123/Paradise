@@ -113,9 +113,6 @@ ALLOW_ADMIN_OOCCOLOR
 ## If metadata is supported
 ALLOW_METADATA
 
-## The time it takes for a round to start in seconds
-PREGAME_TIMESTART 240
-
 ## allow players to initiate a restart vote
 #ALLOW_VOTE_RESTART
 
@@ -191,17 +188,8 @@ CHECK_RANDOMIZER
 ## Rules address
 # RULESURL http://example.org
 
-## GitHub address
-# GITHUBURL http://example.org
-
 ## Discord address
 # DISCORDURL http://example.org
-
-## Donations address
-# DONATIONSURL http://example.org
-
-## Repository address
-# REPOSITORYURL http://example.org
 
 ## Bot ip address
 # RYZORBOT http://ryzorbot.herokuapp.com

@@ -22,7 +22,9 @@
 /obj/item/projectile/energy/electrode/on_hit(var/atom/target, var/blocked = 0)
 	. = ..()
 	if(!ismob(target) || blocked >= 100) //Fully blocked by mob or collided with dense object - burst into sparks!
-		do_sparks(1, 1, src)
+		var/datum/effect_system/spark_spread/sparks = new /datum/effect_system/spark_spread
+		sparks.set_up(1, 1, src)
+		sparks.start()
 	else if(iscarbon(target))
 		var/mob/living/carbon/C = target
 		if(HULK in C.mutations)
@@ -32,7 +34,9 @@
 				C.do_jitter_animation(jitter)
 
 /obj/item/projectile/energy/electrode/on_range() //to ensure the bolt sparks when it reaches the end of its range if it didn't hit a target yet
-	do_sparks(1, 1, src)
+	var/datum/effect_system/spark_spread/sparks = new /datum/effect_system/spark_spread
+	sparks.set_up(1, 1, src)
+	sparks.start()
 	..()
 
 /obj/item/projectile/energy/declone

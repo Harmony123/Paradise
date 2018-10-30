@@ -97,10 +97,7 @@
 	loc.visible_message("<span class='warning'>The corpse of [H.name] suddenly rises!</span>")
 
 /mob/living/simple_animal/hostile/blob/blobspore/death(gibbed)
-	// Only execute the below if we successfuly died
-	. = ..()
-	if(!.)
-		return FALSE
+	..()
 	// On death, create a small smoke of harmful gas (s-Acid)
 	var/datum/effect_system/smoke_spread/chem/S = new
 	var/turf/location = get_turf(src)
@@ -181,8 +178,5 @@
 	return
 
 /mob/living/simple_animal/hostile/blob/blobbernaut/death(gibbed)
-	// Only execute the below if we successfully died
-	. = ..()
-	if(!.)
-		return FALSE
+	..()
 	flick("blobbernaut_death", src)

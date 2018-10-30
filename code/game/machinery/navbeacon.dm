@@ -29,16 +29,16 @@
 	if(!codes || !codes.len)
 		log_runtime(EXCEPTION("Empty codes datum at ([x],[y],[z])"), src, list("codes_txt: '[codes_txt]'"))
 	if("patrol" in codes)
-		if(!GLOB.navbeacons["[z]"])
-			GLOB.navbeacons["[z]"] = list()
-		GLOB.navbeacons["[z]"] += src //Register with the patrol list!
+		if(!navbeacons["[z]"])
+			navbeacons["[z]"] = list()
+		navbeacons["[z]"] += src //Register with the patrol list!
 	if("delivery" in codes)
-		GLOB.deliverybeacons += src
-		GLOB.deliverybeacontags += location
+		deliverybeacons += src
+		deliverybeacontags += location
 
 /obj/machinery/navbeacon/Destroy()
-	GLOB.navbeacons["[z]"] -= src //Remove from beacon list, if in one.
-	GLOB.deliverybeacons -= src
+	navbeacons["[z]"] -= src //Remove from beacon list, if in one.
+	deliverybeacons -= src
 	return ..()
 
 /obj/machinery/navbeacon/serialize()

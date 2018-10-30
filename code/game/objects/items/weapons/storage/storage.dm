@@ -28,7 +28,7 @@
 	if(ishuman(usr)) //so monkeys can take off their backpacks -- Urist
 		var/mob/M = usr
 
-		if(istype(M.loc,/obj/mecha) || M.incapacitated(FALSE, TRUE, TRUE)) // Stops inventory actions in a mech as well as while being incapacitated
+		if(istype(usr.loc,/obj/mecha)) // stops inventory actions in a mech
 			return
 
 		if(over_object == M && Adjacent(M)) // this must come before the screen objects only block
@@ -100,8 +100,6 @@
 	return L
 
 /obj/item/storage/proc/show_to(mob/user as mob)
-	if(!user.client)
-		return
 	if(user.s_active != src)
 		for(var/obj/item/I in src)
 			if(I.on_found(user))
@@ -168,7 +166,7 @@
 
 	if(display_contents_with_number)
 		for(var/datum/numbered_display/ND in display_contents)
-			ND.sample_object.mouse_opacity = MOUSE_OPACITY_OPAQUE
+			ND.sample_object.mouse_opacity = 2
 			ND.sample_object.screen_loc = "[cx]:16,[cy]:16"
 			ND.sample_object.maptext = "<font color='white'>[(ND.number > 1)? "[ND.number]" : ""]</font>"
 			ND.sample_object.layer = 20
@@ -179,7 +177,7 @@
 				cy--
 	else
 		for(var/obj/O in contents)
-			O.mouse_opacity = MOUSE_OPACITY_OPAQUE //This is here so storage items that spawn with contents correctly have the "click around item to equip"
+			O.mouse_opacity = 2 //This is here so storage items that spawn with contents correctly have the "click around item to equip"
 			O.screen_loc = "[cx]:16,[cy]:16"
 			O.maptext = ""
 			O.layer = 20
@@ -311,7 +309,7 @@
 		src.orient2hud(usr)
 		if(usr.s_active)
 			usr.s_active.show_to(usr)
-	W.mouse_opacity = MOUSE_OPACITY_OPAQUE //So you can click on the area around the item to equip it, instead of having to pixel hunt
+	W.mouse_opacity = 2 //So you can click on the area around the item to equip it, instead of having to pixel hunt
 	update_icon()
 	return 1
 
@@ -559,6 +557,3 @@
 		else
 			log_runtime(EXCEPTION("Non-list thing found in storage/deserialize."), src, list("Thing: [thing]"))
 	..()
-
-/obj/item/storage/AllowDrop()
-	return TRUE

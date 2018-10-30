@@ -103,27 +103,6 @@ function linkify(text) {
 	});
 }
 
-function byondDecode(message) {
-	// Basically we url_encode twice server side so we can manually read the encoded version and actually do UTF-8.
-	// The replace for + is because FOR SOME REASON, BYOND replaces spaces with a + instead of %20, and a plus with %2b.
-	// Marvelous.
-	message = message.replace(/\+/g, "%20");
-	try { 
-		// This is a workaround for the above not always working when BYOND's shitty url encoding breaks.
-		// Basically, sometimes BYOND's double encoding trick just arbitrarily produces something that makes decodeURIComponent
-		// throw an "Invalid Encoding URI" URIError... the simplest way to work around this is to just ignore it and use unescape instead
-		// which just fails to decode shit instead of throwing errors
-		if (decodeURIComponent) {
-			message = decodeURIComponent(message);
-		} else {
-			throw new Error("Easiest way to trigger the fallback")
-		}
-	} catch (err) {
-		message = unescape(message);
-	}
-	return message;
-}
-
 function emojiparse(el) {
 
 	if ((typeof UNICODE_9_EMOJI === 'undefined') || (typeof twemoji === 'undefined')) {
@@ -180,7 +159,12 @@ function output(message, flag) {
 	if (flag !== 'internal')
 		opts.lastPang = Date.now();
 
-	message = byondDecode(message).trim();
+	// Basically we url_encode twice server side so we can manually read the encoded version and actually do UTF-8.
+	// The replace for + is because FOR SOME REASON, BYOND replaces spaces with a + instead of %20, and a plus with %2b.
+	// Marvelous.
+	message = message.replace(/\+/g, "%20");
+	//message = decoder(message);
+	message = unescape(message);
 
 	//The behemoth of filter-code (for Admin message filters)
 	//Note: This is proooobably hella inefficient

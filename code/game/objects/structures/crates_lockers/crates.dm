@@ -38,7 +38,9 @@
 		if(isliving(usr))
 			var/mob/living/L = usr
 			if(L.electrocute_act(17, src))
-				do_sparks(5, 1, src)
+				var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+				s.set_up(5, 1, src)
+				s.start()
 				return 2
 
 	playsound(src.loc, 'sound/machines/click.ogg', 15, 1, -3)
@@ -67,8 +69,8 @@
 			break
 		if(O.density || O.anchored || istype(O,/obj/structure/closet))
 			continue
-		if(istype(O, /obj/structure/bed)) //This is only necessary because of rollerbeds and swivel chairs.
-			var/obj/structure/bed/B = O
+		if(istype(O, /obj/structure/stool/bed)) //This is only necessary because of rollerbeds and swivel chairs.
+			var/obj/structure/stool/bed/B = O
 			if(B.buckled_mob)
 				continue
 		O.forceMove(src)
@@ -113,7 +115,9 @@
 					if(!(E.rcell && E.rcell.use(E.chargecost)))
 						to_chat(user, "<span class='notice'>Unable to teleport, insufficient charge.</span>")
 						return
-					do_sparks(5, 1, src)
+					var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+					s.set_up(5, 1, src)
+					s.start()
 					do_teleport(src, E.pad, 0)
 					to_chat(user, "<span class='notice'>Teleport successful. [round(E.rcell.charge/E.chargecost)] charge\s left.</span>")
 					return
@@ -135,7 +139,9 @@
 				if(!(E.rcell && E.rcell.use(E.chargecost)))
 					to_chat(user, "<span class='notice'>Unable to teleport, insufficient charge.</span>")
 					return
-				do_sparks(5, 1, src)
+				var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+				s.set_up(5, 1, src)
+				s.start()
 				do_teleport(src, L)
 				to_chat(user, "<span class='notice'>Teleport successful. [round(E.rcell.charge/E.chargecost)] charge\s left.</span>")
 				return
@@ -211,7 +217,9 @@
 			if(isliving(user))
 				var/mob/living/L = user
 				if(L.electrocute_act(17, src))
-					do_sparks(5, 1, src)
+					var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+					s.set_up(5, 1, src)
+					s.start()
 					return
 		src.add_fingerprint(user)
 		src.toggle(user)
@@ -262,7 +270,9 @@
 		return
 	if(src.allowed(user))
 		src.locked = !src.locked
-		visible_message("<span class='notice'>The crate has been [locked ? null : "un"]locked by [user].</span>")
+		for(var/mob/O in viewers(user, 3))
+			if((O.client && !( O.blinded )))
+				to_chat(O, "<span class='notice'>The crate has been [locked ? null : "un"]locked by [user].</span>")
 		update_icon()
 	else
 		to_chat(user, "<span class='notice'>Access Denied</span>")

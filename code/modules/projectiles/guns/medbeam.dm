@@ -23,9 +23,6 @@
 	processing_objects.Remove(src)
 	return ..()
 
-/obj/item/gun/medbeam/handle_suicide()
-	return
-
 /obj/item/gun/medbeam/dropped(mob/user)
 	..()
 	LoseTarget()

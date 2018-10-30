@@ -8,7 +8,7 @@
 
 	name = "air vent"
 	desc = "Has a valve and pump attached to it"
-	use_power = IDLE_POWER_USE
+	use_power = 1
 
 	can_unwrench = 1
 	var/open = 0
@@ -60,7 +60,7 @@
 
 /obj/machinery/atmospherics/unary/vent_pump/New()
 	..()
-	GLOB.all_vent_pumps += src
+	all_vent_pumps += src
 	icon = null
 	initial_loc = get_area(loc)
 	area_uid = initial_loc.uid
@@ -381,8 +381,6 @@
 	if(!welded)
 		if(open)
 			for(var/obj/item/W in src)
-				if(istype(W, /obj/item/pipe))
-					continue
 				W.forceMove(get_turf(src))
 
 
@@ -431,7 +429,7 @@
 	return ..()
 
 /obj/machinery/atmospherics/unary/vent_pump/Destroy()
-	GLOB.all_vent_pumps -= src
+	all_vent_pumps -= src
 	if(initial_loc)
 		initial_loc.air_vent_info -= id_tag
 		initial_loc.air_vent_names -= id_tag

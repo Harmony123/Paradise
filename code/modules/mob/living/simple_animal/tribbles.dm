@@ -80,10 +80,7 @@ var/global/totaltribbles = 0   //global variable so it updates for all tribbles,
 
 
 /mob/living/simple_animal/tribble/death(gibbed) // Gotta make sure to remove tribbles from the list on death
-	// Only execute the below if we successfully died
-	. = ..(gibbed)
-	if(!.)
-		return FALSE
+	..()
 	totaltribbles -= 1
 
 
@@ -198,7 +195,10 @@ var/global/totaltribbles = 0   //global variable so it updates for all tribbles,
 	if(src.destroyed)
 		return
 	else
-		user.visible_message("<span class='warning'>[user] kicks the lab cage.</span>", "<span class='notice'>You kick the lab cage.</span>")
+		to_chat(usr, text("<span class='notice'>You kick the lab cage.</span>"))
+		for(var/mob/O in oviewers())
+			if((O.client && !( O.blinded )))
+				to_chat(O, text("<span class='warning'>[] kicks the lab cage.</span>", usr))
 		src.health -= 2
 		healthcheck()
 		return

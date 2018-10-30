@@ -5,7 +5,7 @@
 	icon = 'icons/obj/cooking_machines.dmi'
 	icon_state = "oven_off"
 	cook_verbs = list("Baking", "Roasting", "Broiling")
-	recipe_type = RECIPE_OVEN
+	recipe_type = /datum/recipe/oven
 	off_icon = "oven_off"
 	on_icon = "oven_on"
 	broken_icon = "oven_broke"

@@ -41,7 +41,7 @@
 	var/datum/effect_system/spark_spread/spark_system = new
 	var/lights = 0
 	var/lights_power = 6
-	var/emagged = FALSE
+	var/emagged = 0
 
 	//inner atmos
 	var/use_internal_tank = 0
@@ -95,9 +95,9 @@
 
 	processing_objects.Add(src)
 	removeVerb(/obj/mecha/verb/disconnect_from_port)
-	GLOB.poi_list |= src
+	poi_list |= src
 	log_message("[src] created.")
-	GLOB.mechas_list += src //global mech list
+	mechas_list += src //global mech list
 	prepare_huds()
 	for(var/datum/atom_hud/data/diagnostic/diag_hud in huds)
 		diag_hud.add_to_hud(src)
@@ -165,6 +165,8 @@
 			to_chat(user, "[bicon(ME)] [ME]")
 
 
+/obj/mecha/proc/drop_item()//Derpfix, but may be useful in future for engineering exosuits.
+	return
 
 /obj/mecha/hear_talk(mob/M, text)
 	if(M == occupant && radio.broadcasting)
@@ -497,8 +499,8 @@
 	log_message("Attack by simple animal. Attacker - [user].",1)
 	user.changeNext_move(CLICK_CD_MELEE)
 	user.do_attack_animation(src)
-	if((user.a_intent == INTENT_HELP && user.ckey) || user.melee_damage_upper == 0)
-		user.custom_emote(1, "[user.friendly] [src].")
+	if(user.melee_damage_upper == 0)
+		user.custom_emote(1, "[user.friendly] [src]")
 	else
 		user.do_attack_animation(src)
 		if(!prob(deflect_chance))
@@ -616,7 +618,7 @@
 		QDEL_NULL(internal_tank)
 
 	processing_objects.Remove(src)
-	GLOB.poi_list.Remove(src)
+	poi_list.Remove(src)
 	equipment.Cut()
 	cell = null
 	internal_tank = null
@@ -628,7 +630,7 @@
 	cabin_air = null
 	QDEL_NULL(spark_system)
 
-	GLOB.mechas_list -= src //global mech list
+	mechas_list -= src //global mech list
 	return ..()
 
 /obj/mecha/ex_act(severity)
@@ -851,8 +853,14 @@
 		check_for_internal_damage(list(MECHA_INT_TEMP_CONTROL,MECHA_INT_TANK_BREACH,MECHA_INT_CONTROL_LOST))
 
 
-/obj/mecha/emag_act(mob/user)
-	to_chat(user, "<span class='warning'>[src]'s ID slot rejects the card.</span>")
+/obj/mecha/emag_act(user as mob)
+	if(istype(src,	/obj/mecha/working/ripley) && emagged == 0)
+		emagged = 1
+		to_chat(usr, "<span class='notice'>You slide the card through the [src]'s ID slot.</span>")
+		playsound(loc, "sparks", 100, 1)
+		desc += "</br><span class='danger'>The mech's equipment slots spark dangerously!</span>"
+	else
+		to_chat(usr, "<span class='warning'>The [src]'s ID slot rejects the card.</span>")
 	return
 
 

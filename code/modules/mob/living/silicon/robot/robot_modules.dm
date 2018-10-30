@@ -15,7 +15,6 @@
 
 	var/list/stacktypes
 	var/channels = list()
-	var/list/custom_removals = list()
 
 
 /obj/item/robot_module/emp_act(severity)
@@ -40,10 +39,10 @@
 /obj/item/robot_module/proc/fix_modules()
 	for(var/obj/item/I in modules)
 		I.flags |= NODROP
-		I.mouse_opacity = MOUSE_OPACITY_OPAQUE
+		I.mouse_opacity = 2
 	if(emag)
 		emag.flags |= NODROP
-		emag.mouse_opacity = MOUSE_OPACITY_OPAQUE
+		emag.mouse_opacity = 2
 
 /obj/item/robot_module/proc/respawn_consumable(mob/living/silicon/robot/R)
 	if(!stacktypes || !stacktypes.len)
@@ -103,13 +102,6 @@
 		A.Remove(R)
 		qdel(A)
 	R.module_actions.Cut()
-
-// Return true in an overridden subtype to prevent normal removal handling
-/obj/item/robot_module/proc/handle_custom_removal(component_id, mob/living/user, obj/item/W, params)
-	return FALSE
-
-/obj/item/robot_module/proc/handle_death(gibbed)
-	return
 
 /obj/item/robot_module/standard
 	name = "standard robot module"
@@ -219,11 +211,6 @@
 		modules += M
 
 	fix_modules()
-
-/obj/item/robot_module/engineering/handle_death()
-	var/obj/item/gripper/G = locate(/obj/item/gripper) in modules
-	if(G)
-		G.drop_item()
 
 /obj/item/robot_module/security
 	name = "security robot module"
@@ -338,7 +325,6 @@
 	module_actions = list(
 		/datum/action/innate/robot_sight/meson,
 	)
-	custom_removals = list("KA modkits")
 
 /obj/item/robot_module/miner/New()
 	..()
@@ -354,13 +340,6 @@
 	emag = new /obj/item/borg/stun(src)
 
 	fix_modules()
-
-/obj/item/robot_module/miner/handle_custom_removal(component_id, mob/living/user, obj/item/W, params)
-    if(component_id == "KA modkits")
-        for(var/obj/item/gun/energy/kinetic_accelerator/cyborg/D in src)
-            D.attackby(W, user, params)
-        return TRUE
-    return ..()
 
 /obj/item/robot_module/deathsquad
 	name = "NT advanced combat module"
@@ -537,12 +516,6 @@
 	LR.Charge(R)
 
 	..()
-
-
-/obj/item/robot_module/drone/handle_death()
-	var/obj/item/gripper/G = locate(/obj/item/gripper) in modules
-	if(G)
-		G.drop_item()
 
 //checks whether this item is a module of the robot it is located in.
 /obj/item/proc/is_robot_module()

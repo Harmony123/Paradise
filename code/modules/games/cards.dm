@@ -40,7 +40,7 @@
 
 /obj/item/deck/examine(mob/user)
 	..()
-	to_chat(user,"<span class='notice'>It contains [cards.len ? cards.len : "no"] cards</span>")
+	to_chat(user,"<span class='notice'>It contains [cards.len ? cards.len : "no"] cards</span class>")
 
 /obj/item/deck/attack_hand(mob/user as mob)
 	draw_card(user)
@@ -252,7 +252,7 @@
 
 /obj/item/pack/attack_self(mob/user as mob)
 	user.visible_message("<span class='notice'>[name] rips open the [src]!</span>", "<span class='notice'>You rips open the [src]!</span>")
-	var/obj/item/cardhand/H = new(get_turf(user))
+	var/obj/item/cardhand/H = new()
 
 	H.cards += cards
 	cards.Cut()
@@ -260,7 +260,7 @@
 	qdel(src)
 
 	H.update_icon()
-	user.put_in_hands(H)
+	user.put_in_active_hand(H)
 
 /obj/item/cardhand
 	name = "hand of cards"
@@ -317,9 +317,9 @@
 /obj/item/cardhand/examine(mob/user)
 	..(user)
 	if((!concealed) && cards.len)
-		to_chat(user,"<span class='notice'>It contains:</span>")
+		to_chat(user,"<span class='notice'>It contains:</span class>")
 		for(var/datum/playingcard/P in cards)
-			to_chat(user,"<span class='notice'>the [P.name].</span>")
+			to_chat(user,"<span class='notice'>the [P.name].</span class>")
 
 // Datum action here
 
@@ -370,7 +370,7 @@
 	var/datum/playingcard/card = pickablecards[pickedcard]
 
 	var/obj/item/cardhand/H = new(get_turf(src))
-	user.put_in_hands(H)
+	user.put_in_active_hand(H)
 	H.cards += card
 	cards -= card
 	H.parentdeck = parentdeck

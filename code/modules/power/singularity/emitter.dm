@@ -7,7 +7,7 @@
 	density = 1
 	req_access = list(access_engine_equip)
 
-	use_power = NO_POWER_USE
+	use_power = 0
 	idle_power_usage = 10
 	active_power_usage = 300
 
@@ -24,7 +24,6 @@
 	var/frequency = 0
 	var/id_tag = null
 	var/datum/radio_frequency/radio_connection
-	var/datum/effect_system/spark_spread/sparks
 
 /obj/machinery/power/emitter/New()
 	..()
@@ -33,8 +32,6 @@
 	component_parts += new /obj/item/stock_parts/micro_laser(null)
 	component_parts += new /obj/item/stock_parts/manipulator(null)
 	RefreshParts()
-	sparks = new
-	sparks.set_up(5, 1, src)
 
 /obj/machinery/power/emitter/RefreshParts()
 	var/max_firedelay = 120
@@ -127,7 +124,6 @@
 	msg_admin_attack("Emitter deleted at ([x],[y],[z] - [ADMIN_JMP(src)])", ATKLOG_FEW)
 	log_game("Emitter deleted at ([x],[y],[z])")
 	investigate_log("<font color='red'>deleted</font> at ([x],[y],[z])","singulo")
-	QDEL_NULL(sparks)
 	return ..()
 
 /obj/machinery/power/emitter/update_icon()
@@ -171,7 +167,7 @@
 /*	if((severity == 1)&&prob(1)&&prob(1))
 		if(src.active)
 			src.active = 0
-			src.use_power = IDLE_POWER_USE	*/
+			src.use_power = 1	*/
 	return 1
 
 
@@ -210,7 +206,9 @@
 		A.dir = src.dir
 		playsound(get_turf(src), 'sound/weapons/emitter.ogg', 25, 1)
 		if(prob(35))
-			sparks.start()
+			var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+			s.set_up(5, 1, src)
+			s.start()
 
 		switch(dir)
 			if(NORTH)

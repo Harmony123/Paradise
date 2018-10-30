@@ -39,18 +39,18 @@
 	for(var/atom/movable/AM in src)
 		Entered(AM)
 	if(smooth && ticker && ticker.current_state == GAME_STATE_PLAYING)
-		queue_smooth(src)
+		smooth_icon(src)
 
 /hook/startup/proc/smooth_world()
 	var/watch = start_watch()
 	log_startup_progress("Smoothing atoms...")
 	for(var/turf/T in world)
 		if(T.smooth)
-			queue_smooth(T)
+			smooth_icon(T)
 		for(var/A in T)
 			var/atom/AA = A
 			if(AA.smooth)
-				queue_smooth(AA)
+				smooth_icon(AA)
 	log_startup_progress(" Smoothed atoms in [stop_watch(watch)]s.")
 	return 1
 
@@ -475,6 +475,3 @@
 	SSair.remove_from_active(T0)
 	T0.CalculateAdjacentTurfs()
 	SSair.add_to_active(T0,1)
-
-/turf/AllowDrop()
-	return TRUE

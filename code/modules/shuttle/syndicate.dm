@@ -5,7 +5,6 @@
 	icon_screen = "syndishuttle"
 	icon_keyboard = "syndie_key"
 	req_access = list(access_syndicate)
-	circuit = /obj/item/circuitboard/shuttle/syndicate
 	shuttleId = "syndicate"
 	possible_destinations = "syndicate_away;syndicate_z5;syndicate_z3;syndicate_ne;syndicate_nw;syndicate_n;syndicate_se;syndicate_sw;syndicate_s"
 	var/challenge = FALSE
@@ -13,7 +12,6 @@
 
 /obj/machinery/computer/shuttle/syndicate/recall
 	name = "syndicate shuttle recall terminal"
-	circuit = /obj/item/circuitboard/shuttle/syndicate/recall
 	possible_destinations = "syndicate_away"
 
 /obj/machinery/computer/shuttle/syndicate/Topic(href, href_list)
@@ -29,7 +27,6 @@
 	icon = 'icons/obj/terminals.dmi'
 	icon_state = "dorm_available"
 	req_access = list(access_syndicate)
-	circuit = /obj/item/circuitboard/shuttle/syndicate/drop_pod
 	shuttleId = "steel_rain"
 	possible_destinations = null
 

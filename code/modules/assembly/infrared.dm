@@ -7,10 +7,10 @@
 
 	bomb_name = "tripwire mine"
 
-	secured = FALSE // toggle_secure()'ed in New() for correct adding to processing_objects, won't work otherwise
+	secured = 0 // toggle_secure()'ed in New() for correct adding to processing_objects, won't work otherwise
 	dir = EAST
-	var/on = FALSE
-	var/visible = TRUE
+	var/on = 0
+	var/visible = 1
 	var/obj/effect/beam/i_beam/first = null
 	var/obj/effect/beam/i_beam/last = null
 	var/max_nesting_level = 10
@@ -33,18 +33,17 @@
 	to_chat(user, describe())
 
 /obj/item/assembly/infra/activate()
-	if(!..())
-		return FALSE//Cooldown check
+	if(!..())	return 0//Cooldown check
 	on = !on
 	update_icon()
-	return TRUE
+	return 1
 
 /obj/item/assembly/infra/toggle_secure()
 	secured = !secured
 	if(secured)
 		processing_objects.Add(src)
 	else
-		on = FALSE
+		on = 0
 		if(first)
 			qdel(first)
 		processing_objects.Remove(src)
@@ -95,7 +94,7 @@
 		first = I
 		step(I, I.dir)
 		if(first)
-			I.density = FALSE
+			I.density = 0
 			I.vis_spread(visible)
 			I.limit = 8
 			I.process()
@@ -111,10 +110,9 @@
 	qdel(first)
 
 /obj/item/assembly/infra/holder_movement()
-	if(!holder)
-		return FALSE
+	if(!holder)	return 0
 	qdel(first)
-	return TRUE
+	return 1
 
 /obj/item/assembly/infra/equipped(var/mob/user, var/slot)
 	qdel(first)
@@ -126,7 +124,7 @@
 
 /obj/item/assembly/infra/proc/trigger_beam()
 	if(!secured || !on || cooldown > 0)
-		return FALSE
+		return 0
 	pulse(0)
 	audible_message("[bicon(src)] *beep* *beep*", null, 3)
 	if(first)
@@ -135,7 +133,7 @@
 	spawn(10)
 		process_cooldown()
 
-/obj/item/assembly/infra/interact(mob/user)//TODO: change this this to the wire control panel
+/obj/item/assembly/infra/interact(mob/user as mob)//TODO: change this this to the wire control panel
 	if(!secured)	return
 	user.set_machine(src)
 	var/dat = {"<TT><B>Infrared Laser</B>
@@ -198,7 +196,7 @@
 		arm()
 
 /obj/item/assembly/infra/armed/stealth
-	visible = FALSE
+	visible = 0
 
 
 /***************************IBeam*********************************/
@@ -211,11 +209,11 @@
 	var/obj/effect/beam/i_beam/previous = null
 	var/obj/item/assembly/infra/master = null
 	var/limit = null
-	var/visible = FALSE
+	var/visible = 0.0
 	var/left = null
 	var/life_cycles = 0
 	var/life_cap = 20
-	anchored = TRUE
+	anchored = 1.0
 	pass_flags = PASSTABLE | PASSGLASS | PASSGRILLE
 
 
@@ -243,9 +241,9 @@
 		if(!(visible))
 			invisibility = 101
 		else
-			invisibility = FALSE
+			invisibility = 0
 	else
-		invisibility = FALSE
+		invisibility = 0
 
 	if(!next && (limit > 0))
 		var/obj/effect/beam/i_beam/I = new /obj/effect/beam/i_beam(loc)
@@ -257,7 +255,7 @@
 		next = I
 		step(I, I.dir)
 		if(next)
-			I.density = FALSE
+			I.density = 0
 			I.vis_spread(visible)
 			I.limit = limit - 1
 			master.last = I
@@ -269,7 +267,7 @@
 /obj/effect/beam/i_beam/Bumped()
 	hit()
 
-/obj/effect/beam/i_beam/Crossed(atom/movable/AM)
+/obj/effect/beam/i_beam/Crossed(atom/movable/AM as mob|obj)
 	if(!isobj(AM) && !isliving(AM))
 		return
 	if(istype(AM, /obj/effect))

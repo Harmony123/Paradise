@@ -24,7 +24,7 @@
 	icon_state = ""
 	layer = AREA_LAYER
 	uid = ++global_uid
-	GLOB.all_areas += src
+	all_areas += src
 	map_name = name // Save the initial (the name set in the map) name of the area.
 
 	if(type == /area)	// override defaults for space. TODO: make space areas of type /area/space rather than /area
@@ -132,14 +132,14 @@
 	if(!fire)
 		fire = 1	//used for firedoor checks
 		updateicon()
-		mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+		mouse_opacity = 0
 		air_doors_close()
 
 /area/proc/fire_reset()
 	if(fire)
 		fire = 0	//used for firedoor checks
 		updateicon()
-		mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+		mouse_opacity = 0
 		air_doors_open()
 
 	return
@@ -165,7 +165,7 @@
 /area/proc/set_fire_alarm_effect()
 	fire = 1
 	updateicon()
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	mouse_opacity = 0
 
 /area/proc/readyalert()
 	if(!eject)
@@ -181,12 +181,12 @@
 	if(!party)
 		party = 1
 		updateicon()
-		mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+		mouse_opacity = 0
 
 /area/proc/partyreset()
 	if(party)
 		party = 0
-		mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+		mouse_opacity = 0
 		updateicon()
 
 /area/proc/updateicon()
@@ -309,8 +309,8 @@
 		var/mob/M=A
 
 		if(!M.lastarea)
-			M.lastarea = get_area(M)
-		newarea = get_area(M)
+			M.lastarea = get_area_master(M)
+		newarea = get_area_master(M)
 		oldarea = M.lastarea
 
 		if(newarea==oldarea) return
@@ -395,9 +395,3 @@
 		temp_airlock.prison_open()
 	for(var/obj/machinery/door/window/temp_windoor in src)
 		temp_windoor.open()
-
-/area/AllowDrop()
-	CRASH("Bad op: area/AllowDrop() called")
-
-/area/drop_location()
-	CRASH("Bad op: area/drop_location() called")

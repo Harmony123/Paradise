@@ -19,8 +19,6 @@
 	var/leaping = 0
 	ventcrawler = 2
 	var/list/alien_organs = list()
-	var/death_message = "lets out a waning guttural screech, green blood bubbling from its maw..."
-	var/death_sound = 'sound/voice/hiss6.ogg'
 
 /mob/living/carbon/alien/New()
 	verbs += /mob/living/verb/mob_sleep
@@ -34,7 +32,7 @@
 /mob/living/carbon/alien/get_default_language()
 	if(default_language)
 		return default_language
-	return GLOB.all_languages["Xenomorph"]
+	return all_languages["Xenomorph"]
 
 /mob/living/carbon/alien/say_quote(var/message, var/datum/language/speaking = null)
 	var/verb = "hisses"
@@ -51,25 +49,25 @@
 
 
 /mob/living/carbon/alien/adjustToxLoss(amount)
-	return STATUS_UPDATE_NONE
+	return
 
 /mob/living/carbon/alien/adjustFireLoss(amount) // Weak to Fire
 	if(amount > 0)
-		return ..(amount * 2)
+		..(amount * 2)
 	else
-		return ..(amount)
+		..(amount)
+	return
 
 
 /mob/living/carbon/alien/check_eye_prot()
 	return 2
 
-/mob/living/carbon/alien/updatehealth(reason = "none given")
+/mob/living/carbon/alien/updatehealth()
 	if(status_flags & GODMODE)
 		health = maxHealth
 		stat = CONSCIOUS
 		return
 	health = maxHealth - getOxyLoss() - getFireLoss() - getBruteLoss() - getCloneLoss()
-	update_stat("updatehealth([reason])")
 
 /mob/living/carbon/alien/handle_environment(var/datum/gas_mixture/environment)
 
@@ -194,7 +192,7 @@ Des: Gives the client of the alien an image on each infected mob.
 ----------------------------------------*/
 /mob/living/carbon/alien/proc/AddInfectionImages()
 	if(client)
-		for(var/mob/living/C in GLOB.mob_list)
+		for(var/mob/living/C in mob_list)
 			if(C.status_flags & XENO_HOST)
 				var/obj/item/organ/internal/body_egg/alien_embryo/A = C.get_int_organ(/obj/item/organ/internal/body_egg/alien_embryo)
 				if(A)

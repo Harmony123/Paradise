@@ -27,26 +27,14 @@
 	can_suppress = 0
 
 /obj/item/gun/projectile/automatic/pistol/enforcer
-	name = "Enforcer"
+	name = "Enforcer .45"
 	desc = "A pistol of modern design."
 	icon_state = "enforcer_grey"
 	force = 10
-	mag_type = /obj/item/ammo_box/magazine/enforcer
+	mag_type = /obj/item/ammo_box/magazine/m45/enforcer45
 	can_suppress = TRUE
 	unique_reskin = TRUE
 	can_flashlight = TRUE
-
-/obj/item/gun/projectile/automatic/pistol/enforcer/New()
-	..()
-	options["Grey slide"] = "enforcer_grey"
-	options["Red slide"] = "enforcer_red"
-	options["Green slide"] = "enforcer_green"
-	options["Tan slide"] = "enforcer_tan"
-	options["Black slide"] = "enforcer_black"
-	options["Green Handle"] = "enforcer_greengrip"
-	options["Tan Handle"] = "enforcer_tangrip"
-	options["Red Handle"] = "enforcer_redgrip"
-	options["Cancel"] = null
 
 /obj/item/gun/projectile/automatic/pistol/enforcer/update_icon()
 	..()
@@ -66,11 +54,17 @@
 /obj/item/gun/projectile/automatic/pistol/enforcer/ui_action_click()
 	toggle_gunlight()
 
-/obj/item/gun/projectile/automatic/pistol/enforcer/lethal
-
-/obj/item/gun/projectile/automatic/pistol/enforcer/lethal/New()
-	magazine = new/obj/item/ammo_box/magazine/enforcer/lethal
+/obj/item/gun/projectile/automatic/pistol/enforcer/New()
 	..()
+	options["Grey slide"] = "enforcer_grey"
+	options["Red slide"] = "enforcer_red"
+	options["Green slide"] = "enforcer_green"
+	options["Tan slide"] = "enforcer_tan"
+	options["Black slide"] = "enforcer_black"
+	options["Green Handle"] = "enforcer_greengrip"
+	options["Tan Handle"] = "enforcer_tangrip"
+	options["Red Handle"] = "enforcer_redgrip"
+	options["Cancel"] = null
 
 /obj/item/gun/projectile/automatic/pistol/deagle
 	name = "desert eagle"

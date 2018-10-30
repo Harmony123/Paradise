@@ -1,11 +1,8 @@
-#define CALL_SHUTTLE_REASON_LENGTH 12
+var/datum/controller/process/shuttle/shuttle_master
 
-SUBSYSTEM_DEF(shuttle)
-	name = "Shuttle"
-	wait = 10
-	init_order = INIT_ORDER_SHUTTLE
-	flags = SS_KEEP_TIMING|SS_NO_TICK_CHECK
-	runlevels = RUNLEVEL_SETUP | RUNLEVEL_GAME
+var/const/CALL_SHUTTLE_REASON_LENGTH = 12
+
+/datum/controller/process/shuttle
 	var/list/mobile = list()
 	var/list/stationary = list()
 	var/list/transit = list()
@@ -40,8 +37,15 @@ SUBSYSTEM_DEF(shuttle)
 	var/datum/round_event/shuttle_loan/shuttle_loan
 	var/sold_atoms = ""
 
-/datum/controller/subsystem/shuttle/Initialize(start_timeofday)
-	ordernum = rand(1,9000)
+/datum/controller/process/shuttle/setup()
+	name = "shuttle"
+	schedule_interval = 20
+
+	var/watch = start_watch()
+	log_startup_progress("Initializing shuttle docks...")
+	initialize_docks()
+	var/count = mobile.len + stationary.len + transit.len
+	log_startup_progress(" Initialized [count] docks in [stop_watch(watch)]s.")
 
 	if(!emergency)
 		WARNING("No /obj/docking_port/mobile/emergency placed on the map!")
@@ -49,8 +53,8 @@ SUBSYSTEM_DEF(shuttle)
 		WARNING("No /obj/docking_port/mobile/emergency/backup placed on the map!")
 	if(!supply)
 		WARNING("No /obj/docking_port/mobile/supply placed on the map!")
-	
-	initial_load()
+
+	ordernum = rand(1,9000)
 
 	for(var/typepath in subtypesof(/datum/supply_packs))
 		var/datum/supply_packs/P = new typepath()
@@ -58,39 +62,36 @@ SUBSYSTEM_DEF(shuttle)
 		supply_packs["[P.type]"] = P
 	initial_move()
 
-	return ..()
-
-/datum/controller/subsystem/shuttle/stat_entry(msg)
-	..("M:[mobile.len] S:[stationary.len] T:[transit.len]")
-
-/datum/controller/subsystem/shuttle/proc/initial_load()
-	for(var/obj/docking_port/D in world)
-		D.register()
-		CHECK_TICK
-
-/datum/controller/subsystem/shuttle/fire(resumed = FALSE)
-	points += points_per_decisecond * wait
+/datum/controller/process/shuttle/doWork()
+	points += points_per_decisecond * schedule_interval
 	for(var/thing in mobile)
 		if(thing)
 			var/obj/docking_port/mobile/P = thing
 			P.check()
 			continue
-		CHECK_TICK
 		mobile.Remove(thing)
 
-/datum/controller/subsystem/shuttle/proc/getShuttle(id)
+
+DECLARE_GLOBAL_CONTROLLER(shuttle, shuttle_master)
+
+/datum/controller/process/shuttle/proc/initialize_docks()
+	for(var/obj/docking_port/D in world)
+		D.register()
+
+
+/datum/controller/process/shuttle/proc/getShuttle(id)
 	for(var/obj/docking_port/mobile/M in mobile)
 		if(M.id == id)
 			return M
 	WARNING("couldn't find shuttle with id: [id]")
 
-/datum/controller/subsystem/shuttle/proc/getDock(id)
+/datum/controller/process/shuttle/proc/getDock(id)
 	for(var/obj/docking_port/stationary/S in stationary)
 		if(S.id == id)
 			return S
 	WARNING("couldn't find dock with id: [id]")
 
-/datum/controller/subsystem/shuttle/proc/requestEvac(mob/user, call_reason)
+/datum/controller/process/shuttle/proc/requestEvac(mob/user, call_reason)
 	if(!emergency)
 		WARNING("requestEvac(): There is no emergency shuttle, but the shuttle was called. Using the backup shuttle instead.")
 		if(!backup_shuttle)
@@ -150,19 +151,19 @@ SUBSYSTEM_DEF(shuttle)
 
 // Called when an emergency shuttle mobile docking port is
 // destroyed, which will only happen with admin intervention
-/datum/controller/subsystem/shuttle/proc/emergencyDeregister()
+/datum/controller/process/shuttle/proc/emergencyDeregister()
 	// When a new emergency shuttle is created, it will override the
 	// backup shuttle.
 	emergency = backup_shuttle
 
-/datum/controller/subsystem/shuttle/proc/cancelEvac(mob/user)
+/datum/controller/process/shuttle/proc/cancelEvac(mob/user)
 	if(canRecall())
 		emergency.cancel(get_area(user))
 		log_game("[key_name(user)] has recalled the shuttle.")
 		message_admins("[key_name_admin(user)] has recalled the shuttle.")
 		return 1
 
-/datum/controller/subsystem/shuttle/proc/canRecall()
+/datum/controller/process/shuttle/proc/canRecall()
 	if(emergency.mode != SHUTTLE_CALL)
 		return
 	if(!emergency.canRecall)
@@ -177,10 +178,10 @@ SUBSYSTEM_DEF(shuttle)
 			return
 	return 1
 
-/datum/controller/subsystem/shuttle/proc/autoEvac()
+/datum/controller/process/shuttle/proc/autoEvac()
 	var/callShuttle = 1
 
-	for(var/thing in GLOB.shuttle_caller_list)
+	for(var/thing in shuttle_caller_list)
 		if(istype(thing, /mob/living/silicon/ai))
 			var/mob/living/silicon/ai/AI = thing
 			if(AI.stat || !AI.client)
@@ -204,7 +205,7 @@ SUBSYSTEM_DEF(shuttle)
 			message_admins("All the communications consoles were destroyed and all AIs are inactive. Shuttle called.")
 
 //try to move/request to dockHome if possible, otherwise dockAway. Mainly used for admin buttons
-/datum/controller/subsystem/shuttle/proc/toggleShuttle(shuttleId, dockHome, dockAway, timed)
+/datum/controller/process/shuttle/proc/toggleShuttle(shuttleId, dockHome, dockAway, timed)
 	var/obj/docking_port/mobile/M = getShuttle(shuttleId)
 	if(!M)
 		return 1
@@ -221,7 +222,7 @@ SUBSYSTEM_DEF(shuttle)
 	return 0	//dock successful
 
 
-/datum/controller/subsystem/shuttle/proc/moveShuttle(shuttleId, dockId, timed)
+/datum/controller/process/shuttle/proc/moveShuttle(shuttleId, dockId, timed)
 	var/obj/docking_port/mobile/M = getShuttle(shuttleId)
 	var/obj/docking_port/stationary/D = getDock(dockId)
 	if(!M)
@@ -234,29 +235,8 @@ SUBSYSTEM_DEF(shuttle)
 			return 2
 	return 0	//dock successful
 
-/datum/controller/subsystem/shuttle/proc/initial_move()
+/datum/controller/process/shuttle/proc/initial_move()
 	for(var/obj/docking_port/mobile/M in mobile)
 		if(!M.roundstart_move)
 			continue
 		M.dockRoundstart()
-
-/datum/controller/subsystem/shuttle/proc/generateSupplyOrder(packId, _orderedby, _orderedbyRank, _comment, _crates)
-	if(!packId)
-		return
-	var/datum/supply_packs/P = supply_packs["[packId]"]
-	if(!P)
-		return
-
-	var/datum/supply_order/O = new()
-	O.ordernum = ordernum++
-	O.object = P
-	O.orderedby = _orderedby
-	O.orderedbyRank = _orderedbyRank
-	O.comment = _comment
-	O.crates = _crates
-
-	requestlist += O
-
-	return O
-
-#undef CALL_SHUTTLE_REASON_LENGTH

@@ -21,7 +21,7 @@
 	var/hack_wire
 	var/disable_wire
 	var/shock_wire
-	use_power = IDLE_POWER_USE
+	use_power = 1
 	idle_power_usage = 10
 	active_power_usage = 100
 	var/busy = 0
@@ -216,12 +216,15 @@
 	return ..()
 
 /obj/machinery/autolathe/proc/AfterMaterialInsert(type_inserted, id_inserted, amount_inserted)
-	switch(id_inserted)
-		if(MAT_METAL)
-			flick("autolathe_o", src)//plays metal insertion animation
-		if(MAT_GLASS)
-			flick("autolathe_r", src)//plays glass insertion animation
-	use_power(min(1000, amount_inserted / 100))
+	if(ispath(type_inserted, /obj/item/ore/bluespace_crystal))
+		use_power(MINERAL_MATERIAL_AMOUNT / 10)
+	else
+		switch(id_inserted)
+			if(MAT_METAL)
+				flick("autolathe_o",src)//plays metal insertion animation
+			if(MAT_GLASS)
+				flick("autolathe_r",src)//plays glass insertion animation
+		use_power(min(1000, amount_inserted / 100))
 	SSnanoui.update_uis(src)
 
 /obj/machinery/autolathe/attack_ghost(mob/user)

@@ -111,7 +111,7 @@
 		X.pixel_y = Pixel_y
 
 /obj/effect/ebeam
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	mouse_opacity = 0
 	anchored = 1
 	var/datum/beam/owner
 

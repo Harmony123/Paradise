@@ -72,7 +72,7 @@
 	if(!damage_overlays[1]) //list hasn't been populated
 		generate_overlays()
 
-	queue_smooth(src)
+	smooth_icon(src)
 	if(!damage)
 		if(damage_overlay)
 			overlays -= damage_overlays[damage_overlay]
@@ -200,10 +200,7 @@
 		for(var/i=0, i<number_rots, i++)
 			new /obj/effect/overlay/wall_rot(src)
 
-/turf/simulated/wall/proc/thermitemelt(mob/user as mob, speed)
-	var/wait = 100
-	if(speed)
-		wait = speed
+/turf/simulated/wall/proc/thermitemelt(mob/user as mob)
 	if(istype(sheet_type, /obj/item/stack/sheet/mineral/diamond))
 		return
 
@@ -221,10 +218,9 @@
 	var/turf/simulated/floor/F = src
 	F.burn_tile()
 	F.icon_state = "wall_thermite"
-	if(user)
-		to_chat(user, "<span class='warning'>The thermite starts melting through the wall.</span>")
+	to_chat(user, "<span class='warning'>The thermite starts melting through the wall.</span>")
 
-	spawn(wait)
+	spawn(100)
 		if(O)	qdel(O)
 	return
 

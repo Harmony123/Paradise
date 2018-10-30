@@ -1,22 +1,23 @@
+//these are probably broken
+
 /obj/machinery/floodlight
-	name = "emergency floodlight"
+	name = "Emergency Floodlight"
 	icon = 'icons/obj/machines/floodlight.dmi'
 	icon_state = "flood00"
-	anchored = FALSE
-	density = TRUE
-	light_power = 20
-	var/on = FALSE
+	anchored = 0
+	density = 1
+	var/on = 0
 	var/obj/item/stock_parts/cell/high/cell = null
 	var/use = 5
-	var/unlocked = FALSE
-	var/open = FALSE
+	var/unlocked = 0
+	var/open = 0
 	var/brightness_on = 14
+	light_power = 20
+	//var/brightness_on = 999		//can't remember what the maxed out value is //Lighting overhaul: No max, stop TRYING TO ILLUMINATE MORE TILES THAN THE MAP CONSISTS OF.
 
-
-/obj/machinery/floodlight/Initialize()
-	. = ..()
-	cell = new(src)
-	mapVarInit()
+/obj/machinery/floodlight/New()
+	src.cell = new(src)
+	..()
 
 /obj/machinery/floodlight/Destroy()
 	QDEL_NULL(cell)
@@ -26,20 +27,16 @@
 	icon_state = "flood[open ? "o" : ""][open && cell ? "b" : ""]0[on]"
 
 /obj/machinery/floodlight/process()
-	if(!cell && on)
-		on = FALSE
-		visible_message("<span class='warning'>[src] shuts down due to lack of power!</span>")
-		update_icon()
-		set_light(0)
 	if(on)
 		cell.charge -= use
 		if(cell.charge <= 0)
-			on = FALSE
+			on = 0
 			updateicon()
 			set_light(0)
-			visible_message("<span class='warning'>[src] shuts down due to lack of power!</span>")
+			src.visible_message("<span class='warning'>[src] shuts down due to lack of power!</span>")
+			return
 
-/obj/machinery/floodlight/attack_ai()
+/obj/machinery/floodlight/attack_ai(mob/user as mob)
 	return
 
 /obj/machinery/floodlight/attack_hand(mob/user as mob)
@@ -53,73 +50,61 @@
 		cell.add_fingerprint(user)
 		cell.update_icon()
 
-		cell = null
-		to_chat(user, "You remove the power cell.")
-		if(on)
-			on = FALSE
-			visible_message("<span class='warning'>[src] shuts down due to lack of power!</span>")
-			set_light(0)
+		src.cell = null
+		to_chat(user, "You remove the power cell")
 		updateicon()
 		return
 
 	if(on)
-		on = FALSE
-		to_chat(user, "<span class='notice'>You turn off the light.</span>")
+		on = 0
+		to_chat(user, "<span class='notice'>You turn off the light</span>")
 		set_light(0)
 	else
 		if(!cell)
 			return
 		if(cell.charge <= 0)
 			return
-		on = TRUE
-		to_chat(user, "<span class='notice'>You turn on the light.</span>")
+		on = 1
+		to_chat(user, "<span class='notice'>You turn on the light</span>")
 		set_light(brightness_on)
 
 	updateicon()
 
-/obj/machinery/floodlight/proc/mapVarInit()
-	if(on)
-		if(!cell)
-			return
-		if(cell.charge <= 0)
-			return
-		set_light(brightness_on)
-		updateicon()
 
 /obj/machinery/floodlight/attackby(obj/item/W as obj, mob/user as mob, params)
 	if(istype(W, /obj/item/wrench))
 		if(!anchored && !isinspace())
-			playsound(loc, W.usesound, 50, 1)
+			playsound(src.loc, W.usesound, 50, 1)
 			user.visible_message( \
 				"[user] tightens \the [src]'s casters.", \
 				"<span class='notice'> You have tightened \the [src]'s casters.</span>", \
 				"You hear ratchet.")
-			anchored = TRUE
+			anchored = 1
 		else if(anchored)
-			playsound(loc, W.usesound, 50, 1)
+			playsound(src.loc, W.usesound, 50, 1)
 			user.visible_message( \
 				"[user] loosens \the [src]'s casters.", \
 				"<span class='notice'> You have loosened \the [src]'s casters.</span>", \
 				"You hear ratchet.")
-			anchored = FALSE
+			anchored = 0
 	if(istype(W, /obj/item/screwdriver))
 		if(!open)
 			if(unlocked)
-				unlocked = FALSE
+				unlocked = 0
 				to_chat(user, "You screw the battery panel in place.")
 			else
-				unlocked = TRUE
+				unlocked = 1
 				to_chat(user, "You unscrew the battery panel.")
 
 	if(istype(W, /obj/item/crowbar))
 		if(unlocked)
 			if(open)
-				open = FALSE
+				open = 0
 				overlays = null
 				to_chat(user, "You crowbar the battery panel in place.")
 			else
 				if(unlocked)
-					open = TRUE
+					open = 1
 					to_chat(user, "You remove the battery panel.")
 
 	if(istype(W, /obj/item/stock_parts/cell))

@@ -214,14 +214,16 @@
 /mob/living/verb/succumb()
 	set hidden = 1
 	if(InCritical())
-		create_attack_log("[src] has ["succumbed to death"] with [round(health, 0.1)] points of health!")
+		attack_log += "[src] has ["succumbed to death"] with [round(health, 0.1)] points of health!"
 		adjustOxyLoss(health - config.health_threshold_dead)
+		updatehealth()
 		// super check for weird mobs, including ones that adjust hp
 		// we don't want to go overboard and gib them, though
 		for(var/i = 1 to 5)
 			if(health < config.health_threshold_dead)
 				break
 			take_overall_damage(max(5, health - config.health_threshold_dead), 0)
+			updatehealth()
 		to_chat(src, "<span class='notice'>You have given up life and succumbed to death.</span>")
 
 /mob/living/proc/InCritical()
@@ -231,15 +233,12 @@
 	..()
 	flash_eyes()
 
-/mob/living/proc/updatehealth(reason = "none given")
+/mob/living/proc/updatehealth()
 	if(status_flags & GODMODE)
 		health = maxHealth
 		stat = CONSCIOUS
 		return
 	health = maxHealth - getOxyLoss() - getToxLoss() - getFireLoss() - getBruteLoss() - getCloneLoss()
-
-	update_stat("updatehealth([reason])")
-	handle_hud_icons_health()
 	med_hud_set_health()
 
 
@@ -267,6 +266,89 @@
 //	if(istype(src, /mob/living/carbon/human))
 //		to_chat(world, "[src] ~ [bodytemperature] ~ [temperature]")
 	return temperature
+
+
+// ++++ROCKDTBEN++++ MOB PROCS -- Ask me before touching.
+// Stop! ... Hammertime! ~Carn
+// I touched them without asking... I'm soooo edgy ~Erro (added nodamage checks)
+// no ~Tigerkitty
+
+/mob/living/proc/getBruteLoss()
+	return bruteloss
+
+/mob/living/proc/adjustBruteLoss(var/amount)
+	if(status_flags & GODMODE)	return 0	//godmode
+	bruteloss = min(max(bruteloss + amount, 0),(maxHealth*2))
+
+/mob/living/proc/getOxyLoss()
+	return oxyloss
+
+/mob/living/proc/adjustOxyLoss(var/amount)
+	if(status_flags & GODMODE)	return 0	//godmode
+	oxyloss = min(max(oxyloss + amount, 0),(maxHealth*2))
+
+/mob/living/proc/setOxyLoss(var/amount)
+	if(status_flags & GODMODE)	return 0	//godmode
+	oxyloss = amount
+
+/mob/living/proc/getToxLoss()
+	return toxloss
+
+/mob/living/proc/adjustToxLoss(var/amount)
+	if(status_flags & GODMODE)	return 0	//godmode
+	toxloss = min(max(toxloss + amount, 0),(maxHealth*2))
+
+/mob/living/proc/setToxLoss(var/amount)
+	if(status_flags & GODMODE)	return 0	//godmode
+	toxloss = amount
+
+/mob/living/proc/getFireLoss()
+	return fireloss
+
+/mob/living/proc/adjustFireLoss(var/amount)
+	if(status_flags & GODMODE)	return 0	//godmode
+	fireloss = min(max(fireloss + amount, 0),(maxHealth*2))
+
+/mob/living/proc/getCloneLoss()
+	return cloneloss
+
+/mob/living/proc/adjustCloneLoss(var/amount)
+	if(status_flags & GODMODE)	return 0	//godmode
+	cloneloss = min(max(cloneloss + amount, 0),(maxHealth*2))
+
+/mob/living/proc/setCloneLoss(var/amount)
+	if(status_flags & GODMODE)	return 0	//godmode
+	cloneloss = amount
+
+/mob/living/proc/getBrainLoss()
+	return brainloss
+
+/mob/living/proc/adjustBrainLoss(var/amount)
+	if(status_flags & GODMODE)	return 0	//godmode
+	brainloss = min(max(brainloss + amount, 0),(maxHealth*2))
+
+/mob/living/proc/setBrainLoss(var/amount)
+	if(status_flags & GODMODE)	return 0	//godmode
+	brainloss = amount
+
+/mob/living/proc/getStaminaLoss()
+	return staminaloss
+
+/mob/living/proc/adjustStaminaLoss(var/amount)
+	if(status_flags & GODMODE)	return 0
+	staminaloss = min(max(staminaloss + amount, 0),(maxHealth*2))
+
+/mob/living/proc/setStaminaLoss(var/amount)
+	if(status_flags & GODMODE)	return 0
+	staminaloss = amount
+
+/mob/living/proc/getMaxHealth()
+	return maxHealth
+
+/mob/living/proc/setMaxHealth(var/newMaxHealth)
+	maxHealth = newMaxHealth
+
+// ++++ROCKDTBEN++++ MOB PROCS //END
 
 
 /mob/proc/get_contents()
@@ -329,13 +411,7 @@
 
 
 /mob/living/proc/can_inject()
-	return TRUE
-
-/mob/living/is_injectable(allowmobs = TRUE)
-	return (allowmobs && reagents && can_inject())
-
-/mob/living/is_drawable(allowmobs = TRUE)
-	return (allowmobs && reagents && can_inject())
+	return 1
 
 /mob/living/proc/get_organ_target()
 	var/mob/shooter = src
@@ -344,6 +420,35 @@
 		t = "head"
 	var/obj/item/organ/external/def_zone = ran_zone(t)
 	return def_zone
+
+// heal ONE external organ, organ gets randomly selected from damaged ones.
+/mob/living/proc/heal_organ_damage(var/brute, var/burn)
+	adjustBruteLoss(-brute)
+	adjustFireLoss(-burn)
+	updatehealth()
+
+// damage ONE external organ, organ gets randomly selected from damaged ones.
+/mob/living/proc/take_organ_damage(var/brute, var/burn)
+	if(status_flags & GODMODE)	return 0	//godmode
+	adjustBruteLoss(brute)
+	adjustFireLoss(burn)
+	updatehealth()
+
+// heal MANY external organs, in random order
+/mob/living/proc/heal_overall_damage(var/brute, var/burn)
+	adjustBruteLoss(-brute)
+	adjustFireLoss(-burn)
+	updatehealth()
+
+// damage MANY external organs, in random order
+/mob/living/proc/take_overall_damage(var/brute, var/burn, var/used_weapon = null)
+	if(status_flags & GODMODE)	return 0	//godmode
+	adjustBruteLoss(brute)
+	adjustFireLoss(burn)
+	updatehealth()
+
+/mob/living/proc/has_organic_damage()
+	return (maxHealth - health)
 
 
 /mob/living/proc/restore_all_organs()
@@ -365,11 +470,10 @@
 		C.update_inv_legcuffed()
 
 		if(C.reagents)
-			C.reagents.clear_reagents()
-			QDEL_LIST(C.reagents.addiction_list)
+			for(var/datum/reagent/R in C.reagents.reagent_list)
+				C.reagents.clear_reagents()
+			C.reagents.addiction_list.Cut()
 
-// rejuvenate: Called by `revive` to get the mob into a revivable state
-// the admin "rejuvenate" command calls `revive`, not this proc.
 /mob/living/proc/rejuvenate()
 	var/mob/living/carbon/human/human_mob = null //Get this declared for use later.
 
@@ -392,6 +496,7 @@
 	radiation = 0
 	SetDruggy(0)
 	SetHallucinate(0)
+	blinded = 0
 	nutrition = NUTRITION_LEVEL_FED + 50
 	bodytemperature = 310
 	CureBlind()
@@ -439,10 +544,11 @@
 	restore_all_organs()
 	surgeries.Cut() //End all surgeries.
 	if(stat == DEAD)
-		update_revive()
-	else if(stat == UNCONSCIOUS)
-		WakeUp()
+		dead_mob_list -= src
+		living_mob_list += src
+		timeofdeath = 0
 
+	stat = CONSCIOUS
 	update_fire()
 	regenerate_icons()
 	restore_blood()

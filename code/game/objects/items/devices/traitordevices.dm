@@ -158,13 +158,13 @@ effective or pretty fucking useless.
 	var/range = 12
 
 /obj/item/jammer/Destroy()
-	GLOB.active_jammers -= src
+	active_jammers -= src
 	return ..()
 
 /obj/item/jammer/attack_self(mob/user)
 	to_chat(user,"<span class='notice'>You [active ? "deactivate" : "activate"] the [src].</span>")
 	active = !active
 	if(active)
-		GLOB.active_jammers |= src
+		active_jammers |= src
 	else
-		GLOB.active_jammers -= src
+		active_jammers -= src

@@ -37,7 +37,8 @@
 	add_to_streak("G",D)
 	if(check_streak(A,D))
 		return 1
-	var/obj/item/grab/G = D.grabbedby(A,1)
+	D.grabbedby(A,1)
+	var/obj/item/grab/G = A.get_active_hand()
 	if(G)
 		G.state = GRAB_NECK
 
@@ -74,7 +75,7 @@
 			D.revive()
 			D.suiciding = 0
 		if(!D.ckey)
-			for(var/mob/dead/observer/ghost in GLOB.player_list)
+			for(var/mob/dead/observer/ghost in player_list)
 				if(D.real_name == ghost.real_name)
 					ghost.reenter_corpse()
 					break

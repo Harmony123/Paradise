@@ -58,7 +58,7 @@
 	anchored = 1
 	density = 1
 	layer = 5
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	mouse_opacity = 0
 
 /obj/effect/overlay/wall_rot/New()
 	..()

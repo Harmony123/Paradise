@@ -14,8 +14,6 @@
 	var/list/visibleCameraChunks = list()
 	var/mob/living/silicon/ai/ai = null
 	var/relay_speech = FALSE
-	var/use_static = TRUE
-	var/static_visibility_range = 16
 
 
 // Use this when setting the aiEye's location.
@@ -27,13 +25,10 @@
 			return
 		T = get_turf(T)
 		loc = T
-		if(use_static)
-			ai.camera_visibility(src)
-		if(ai.client && !ai.multicam_on)
+		cameranet.visibility(src)
+		if(ai.client)
 			ai.client.eye = src
 		//Holopad
-		if(ai.master_multicam)
-			ai.master_multicam.refresh_view()
 		if(istype(ai.current, /obj/machinery/hologram/holopad))
 			var/obj/machinery/hologram/holopad/H = ai.current
 			H.move_hologram(ai, T)
@@ -46,16 +41,18 @@
 		return ai.client
 	return null
 
+
 /mob/camera/aiEye/proc/RemoveImages()
 	var/client/C = GetViewerClient()
-	if(C && use_static)
+	if(C)
 		for(var/V in visibleCameraChunks)
 			var/datum/camerachunk/chunk = V
 			C.images -= chunk.obscured
 
+
 /mob/camera/aiEye/Destroy()
 	if(ai)
-		ai.all_eyes -= src
+		//ai.all_eyes -= src
 		ai = null
 	for(var/V in visibleCameraChunks)
 		var/datum/camerachunk/chunk = V
@@ -65,9 +62,9 @@
 /atom/proc/move_camera_by_click()
 	if(istype(usr, /mob/living/silicon/ai))
 		var/mob/living/silicon/ai/AI = usr
-		if(AI.eyeobj && (AI.multicam_on || (AI.client.eye == AI.eyeobj)) && (AI.eyeobj.z == z))
+		if(AI.eyeobj && AI.client.eye == AI.eyeobj)
 			AI.cameraFollow = null
-			if(isturf(loc) || isturf(src))
+			if(isturf(src.loc) || isturf(src))
 				AI.eyeobj.setLoc(src)
 
 // AI MOVEMENT
@@ -127,7 +124,6 @@
 	if(eyeobj)
 		return
 	eyeobj = new /mob/camera/aiEye()
-	all_eyes += eyeobj
 	eyeobj.ai = src
 	eyeobj.setLoc(loc)
 	eyeobj.name = "[name] (AI Eye)"
@@ -141,6 +137,6 @@
 	acceleration = !acceleration
 	to_chat(usr, "Camera acceleration has been toggled [acceleration ? "on" : "off"].")
 
-/mob/camera/aiEye/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/italics = 0, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol)
+/mob/camera/aiEye/hear_say(var/message, var/verb = "says", var/datum/language/language = null, var/alt_name = "", var/italics = 0, var/mob/speaker = null, var/sound/speech_sound, var/sound_vol)
 	if(relay_speech)
 		ai.relay_speech(speaker, message, verb, language)

@@ -14,7 +14,6 @@
 	var/status = 0
 	var/obj/item/stock_parts/cell/high/bcell = null
 	var/hitcost = 1000
-	var/throw_hit_chance = 35
 
 /obj/item/melee/baton/suicide_act(mob/user)
 	user.visible_message("<span class='suicide'>[user] is putting the live [name] in [user.p_their()] mouth! It looks like [user.p_theyre()] trying to commit suicide.</span>")
@@ -28,11 +27,6 @@
 /obj/item/melee/baton/Destroy()
 	QDEL_NULL(bcell)
 	return ..()
-
-/obj/item/melee/baton/throw_impact(atom/hit_atom)
-	..()
-	if(status && prob(throw_hit_chance))
-		baton_stun(hit_atom)
 
 /obj/item/melee/baton/loaded/New() //this one starts with a cell pre-installed.
 	..()
@@ -139,25 +133,20 @@
 
 
 /obj/item/melee/baton/proc/baton_stun(mob/living/L, mob/user)
-	if(!ismob(L)) //because this was being called on turfs for some reason
-		return
-	
 	if(ishuman(L))
 		var/mob/living/carbon/human/H = L
 		if(H.check_shields(0, "[user]'s [name]", src, MELEE_ATTACK)) //No message; check_shields() handles that
 			playsound(L, 'sound/weapons/Genhit.ogg', 50, 1)
 			return
-	
+	user.lastattacked = L
+	L.lastattacker = user
+
 	L.Stun(stunforce)
 	L.Weaken(stunforce)
 	L.apply_effect(STUTTER, stunforce)
 
-	if(user)
-		user.lastattacked = L
-		L.lastattacker = user
-		L.visible_message("<span class='danger'>[user] has stunned [L] with [src]!</span>", \
-								"<span class='userdanger'>[user] has stunned you with [src]!</span>")
-		add_attack_logs(user, L, "stunned")
+	L.visible_message("<span class='danger'>[user] has stunned [L] with [src]!</span>", \
+							"<span class='userdanger'>[user] has stunned you with [src]!</span>")
 	playsound(loc, 'sound/weapons/Egloves.ogg', 50, 1, -1)
 
 	if(isrobot(loc))
@@ -169,7 +158,9 @@
 
 	if(ishuman(L))
 		var/mob/living/carbon/human/H = L
-		H.forcesay(GLOB.hit_appends)
+		H.forcesay(hit_appends)
+
+	add_attack_logs(user, L, "Stunned with [src]")
 
 /obj/item/melee/baton/emp_act(severity)
 	if(bcell)
@@ -202,7 +193,6 @@
 	throwforce = 5
 	stunforce = 5
 	hitcost = 2000
-	throw_hit_chance = 10
 	slot_flags = SLOT_BACK
 	var/obj/item/assembly/igniter/sparkler = null
 

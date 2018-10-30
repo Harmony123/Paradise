@@ -8,10 +8,10 @@
 
 /obj/item/implant/tracking/New()
 	..()
-	GLOB.tracked_implants += src
+	tracked_implants += src
 
 /obj/item/implant/tracking/Destroy()
-	GLOB.tracked_implants -= src
+	tracked_implants -= src
 	return ..()
 
 /obj/item/implant/tracking/get_data()

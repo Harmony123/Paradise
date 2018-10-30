@@ -13,16 +13,13 @@
 	if(!O)
 		return 0
 
-	O.mouse_opacity = MOUSE_OPACITY_OPAQUE
+	O.mouse_opacity = 2
 
 	if(client)
 		client.screen -= O
 	contents -= O
 	if(module)
 		O.loc = module	//Return item to module so it appears in its contents, so it can be taken out again.
-		for(var/X in O.actions) // Remove assocated actions
-			var/datum/action/A = X
-			A.Remove(src)
 
 	if(module_active == O)
 		module_active = null
@@ -59,7 +56,6 @@
 		O.plane = HUD_PLANE
 		O.screen_loc = inv1.screen_loc
 		contents += O
-		set_actions(O)
 	else if(!module_state_2)
 		O.mouse_opacity = initial(O.mouse_opacity)
 		module_state_2 = O
@@ -67,7 +63,6 @@
 		O.plane = HUD_PLANE
 		O.screen_loc = inv2.screen_loc
 		contents += O
-		set_actions(O)
 	else if(!module_state_3)
 		O.mouse_opacity = initial(O.mouse_opacity)
 		module_state_3 = O
@@ -75,15 +70,9 @@
 		O.plane = HUD_PLANE
 		O.screen_loc = inv3.screen_loc
 		contents += O
-		set_actions(O)
 	else
 		to_chat(src, "You need to disable a module first!")
 	update_icons()
-
-/mob/living/silicon/robot/proc/set_actions(obj/item/I)
-	for(var/X in I.actions)
-		var/datum/action/A = X
-		A.Grant(src)
 
 /mob/living/silicon/robot/proc/uneq_active()
 	uneq_module(module_active)

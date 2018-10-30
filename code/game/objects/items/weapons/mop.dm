@@ -18,10 +18,10 @@
 /obj/item/mop/New()
 	..()
 	create_reagents(mopcap)
-	GLOB.janitorial_equipment += src
+	janitorial_equipment += src
 
 /obj/item/mop/Destroy()
-	GLOB.janitorial_equipment -= src
+	janitorial_equipment -= src
 	return ..()
 
 /obj/item/mop/proc/clean(turf/simulated/A)

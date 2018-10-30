@@ -5,7 +5,7 @@
 	icon_state = "biogen-empty"
 	density = 1
 	anchored = 1
-	use_power = IDLE_POWER_USE
+	use_power = 1
 	idle_power_usage = 40
 	var/processing = 0
 	var/obj/item/reagent_containers/glass/beaker = null

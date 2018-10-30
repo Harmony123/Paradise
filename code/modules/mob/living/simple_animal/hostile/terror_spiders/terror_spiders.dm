@@ -241,7 +241,7 @@ var/global/list/ts_spiderling_list = list()
 	add_language("Spider Hivemind")
 	if(spider_tier >= TS_TIER_2)
 		add_language("Galactic Common")
-	default_language = GLOB.all_languages["Spider Hivemind"]
+	default_language = all_languages["Spider Hivemind"]
 
 	web_action = new()
 	web_action.Grant(src)
@@ -321,11 +321,10 @@ var/global/list/ts_spiderling_list = list()
 			ts_count_alive_station--
 
 /mob/living/simple_animal/hostile/poison/terror_spider/death(gibbed)
-	if(can_die())
-		if(!gibbed)
-			msg_terrorspiders("[src] has died in [get_area(src)].")
-		handle_dying()
-	return ..()
+	if(!gibbed)
+		msg_terrorspiders("[src] has died in [get_area(src)].")
+	handle_dying()
+	..()
 
 /mob/living/simple_animal/hostile/poison/terror_spider/proc/spider_special_action()
 	return

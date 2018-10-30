@@ -209,7 +209,9 @@
 						if(!L.on)
 							return
 						L.visible_message("<span class='warning'><b>\The [L] suddenly flares brightly and begins to spark!</span>")
-						do_sparks(4, 0, L)
+						var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread/
+						s.set_up(4, 0, L)
+						s.start()
 						new/obj/effect/temp_visual/revenant(L.loc)
 						sleep(20)
 						if(!L.on) //wait, wait, don't shock me
@@ -220,7 +222,9 @@
 								return
 							M.Beam(L,icon_state="purple_lightning",icon='icons/effects/effects.dmi',time=5)
 							M.electrocute_act(shock_damage, "[L.name]", safety=1)
-							do_sparks(4, 0, M)
+							var/datum/effect_system/spark_spread/z = new /datum/effect_system/spark_spread/
+							z.set_up(4, 0, M)
+							z.start()
 							playsound(M, 'sound/machines/defib_zap.ogg', 50, 1, -1)
 
 //Defile: Corrupts nearby stuff, unblesses floor tiles.

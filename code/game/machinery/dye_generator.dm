@@ -4,7 +4,7 @@
 	icon_state = "barbervend"
 	density = 1
 	anchored = 1
-	use_power = IDLE_POWER_USE
+	use_power = 1
 	idle_power_usage = 40
 	var/dye_color = "#FFFFFF"
 

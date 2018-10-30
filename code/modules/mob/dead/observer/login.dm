@@ -4,8 +4,8 @@
 		ghostimage.icon_state = src.icon_state
 	updateghostimages()
 
-	if(GLOB.non_respawnable_keys[ckey])
+	if(non_respawnable_keys[ckey])
 		can_reenter_corpse = 0
-		GLOB.respawnable_list -= src
+		respawnable_list -= src
 	
 	update_interface()

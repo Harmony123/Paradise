@@ -16,8 +16,7 @@
 	..()
 
 /mob/living/carbon/human/virtual_reality/death()
-	if(can_die())
-		return_to_lobby()
+	return_to_lobby()
 	return ..()
 
 /mob/living/carbon/human/virtual_reality/Destroy()

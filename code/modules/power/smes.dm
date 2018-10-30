@@ -184,7 +184,9 @@
 
 		if(do_after(user, 50 * I.toolspeed, target = src))
 			if(prob(50) && electrocute_mob(usr, terminal.powernet, terminal)) //animate the electrocution if uncautious and unlucky
-				do_sparks(5, 1, src)
+				var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+				s.set_up(5, 1, src)
+				s.start()
 				return
 
 			//give the wires back and delete the terminal
@@ -321,7 +323,9 @@
 		var/turf/T = get_turf(user)
 		var/obj/structure/cable/N = T.get_cable_node() //get the connecting node cable, if there's one
 		if(prob(50) && electrocute_mob(user, N, N)) //animate the electrocution if uncautious and unlucky
-			do_sparks(5, 1, src)
+			var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+			s.set_up(5, 1, src)
+			s.start()
 			return
 
 		user.visible_message(\
@@ -442,7 +446,9 @@
 			qdel(src)
 			return
 		if(prob(15)) //Power drain
-			do_sparks(3, 1, src)
+			var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+			s.set_up(3, 1, src)
+			s.start()
 			if(prob(50))
 				emp_act(1)
 			else

@@ -1,6 +1,6 @@
 /obj/effect/decal/warning_stripes
 	icon = 'icons/effects/warning_stripes.dmi'
-	layer = TURF_LAYER
+	layer = 2
 
 /obj/effect/decal/warning_stripes/north
 	icon_state = "N"
@@ -50,7 +50,7 @@
 /obj/effect/decal/warning_stripes/northwestsouth
 	icon_state = "U-E"
 
-/obj/effect/decal/warning_stripes/Initialize()
+/obj/effect/decal/warning_stripes/New()
 	. = ..()
 	loc.overlays += src
 	qdel(src)

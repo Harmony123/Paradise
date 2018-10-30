@@ -35,11 +35,11 @@ var/list/admin_datums = list()
 		owner.on_holder_add()
 		owner.add_admin_verbs()	//TODO
 		owner.verbs -= /client/proc/readmin
-		GLOB.admins |= C
+		admins |= C
 
 /datum/admins/proc/disassociate()
 	if(owner)
-		GLOB.admins -= owner
+		admins -= owner
 		owner.remove_admin_verbs()
 		owner.holder = null
 		owner = null

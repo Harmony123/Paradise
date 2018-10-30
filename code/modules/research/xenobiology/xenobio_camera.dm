@@ -64,6 +64,7 @@
 		actions += monkey_recycle_action
 
 
+
 /obj/machinery/computer/camera_advanced/xenobio/attack_hand(mob/user)
 	if(!ishuman(user)) //AIs using it might be weird
 		return

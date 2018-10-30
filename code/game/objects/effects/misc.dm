@@ -32,7 +32,7 @@
 		anchored = 1
 		layer = 99
 		plane = HUD_PLANE
-		mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+		mouse_opacity = 0
 		unacidable = 1//Just to be sure.
 
 /obj/effect/beam

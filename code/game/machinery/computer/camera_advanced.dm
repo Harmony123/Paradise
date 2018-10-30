@@ -138,8 +138,7 @@
 			return
 		T = get_turf(T)
 		loc = T
-		if(use_static)
-			cameranet.visibility(src, GetViewerClient())
+		cameranet.visibility(src)
 		if(visible_icon)
 			if(eye_user.client)
 				eye_user.client.images -= user_image

@@ -73,7 +73,10 @@
 			AdjustEarDamage(15)
 			AdjustEarDeaf(60)
 
-	take_overall_damage(b_loss, f_loss)
+	adjustBruteLoss(b_loss)
+	adjustFireLoss(f_loss)
+
+	updatehealth()
 
 /mob/living/carbon/alien/humanoid/attack_slime(mob/living/carbon/slime/M)
 	..()
@@ -82,6 +85,7 @@
 		damage = rand(10, 30)
 	adjustBruteLoss(damage)
 	add_attack_logs(src, M, "Slime'd for [damage] damage")
+	updatehealth()
 	return
 
 /mob/living/carbon/alien/humanoid/restrained()

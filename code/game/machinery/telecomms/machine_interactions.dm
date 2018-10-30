@@ -222,7 +222,7 @@
 /obj/machinery/telecomms/processor/Options_Topic(href, href_list)
 
 	if(href_list["process"])
-		temp = "<font color = #666633>-% Processing mode changed. %-</font>"
+		temp = "<font color = #666633>-% Processing mode changed. %-</font color>"
 		src.process_mode = !src.process_mode
 */
 
@@ -240,18 +240,18 @@
 
 	if(href_list["receive"])
 		receiving = !receiving
-		temp = "<font color = #666633>-% Receiving mode changed. %-</font>"
+		temp = "<font color = #666633>-% Receiving mode changed. %-</font color>"
 	if(href_list["broadcast"])
 		broadcasting = !broadcasting
-		temp = "<font color = #666633>-% Broadcasting mode changed. %-</font>"
+		temp = "<font color = #666633>-% Broadcasting mode changed. %-</font color>"
 	if(href_list["change_listening"])
 		//Lock to the station OR lock to the current position!
 		//You need at least two receivers and two broadcasters for this to work, this includes the machine.
 		var/result = toggle_level()
 		if(result)
-			temp = "<font color = #666633>-% [src]'s signal has been successfully changed.</font>"
+			temp = "<font color = #666633>-% [src]'s signal has been successfully changed.</font color>"
 		else
-			temp = "<font color = #666633>-% [src] could not lock it's signal onto the station. Two broadcasters or receivers required.</font>"
+			temp = "<font color = #666633>-% [src] could not lock it's signal onto the station. Two broadcasters or receivers required.</font color>"
 
 // BUS
 
@@ -270,10 +270,10 @@
 					newfreq *= 10 // shift the decimal one place
 				if(newfreq < 10000)
 					change_frequency = newfreq
-					temp = "<font color = #666633>-% New frequency to change to assigned: \"[newfreq] GHz\" %-</font>"
+					temp = "<font color = #666633>-% New frequency to change to assigned: \"[newfreq] GHz\" %-</font color>"
 			else
 				change_frequency = 0
-				temp = "<font color = #666633>-% Frequency changing deactivated %-</font>"
+				temp = "<font color = #666633>-% Frequency changing deactivated %-</font color>"
 
 
 /obj/machinery/telecomms/Topic(href, href_list)
@@ -293,27 +293,27 @@
 			if("toggle")
 
 				src.toggled = !src.toggled
-				temp = "<font color = #666633>-% [src] has been [src.toggled ? "activated" : "deactivated"].</font>"
+				temp = "<font color = #666633>-% [src] has been [src.toggled ? "activated" : "deactivated"].</font color>"
 				update_power()
 
 			/*
 			if("hide")
 				src.hide = !hide
-				temp = "<font color = #666633>-% Shadow Link has been [src.hide ? "activated" : "deactivated"].</font>"
+				temp = "<font color = #666633>-% Shadow Link has been [src.hide ? "activated" : "deactivated"].</font color>"
 			*/
 
 			if("id")
 				var/newid = copytext(reject_bad_text(input(usr, "Specify the new ID for this machine", src, id) as null|text),1,MAX_MESSAGE_LEN)
 				if(newid && canAccess(usr))
 					id = newid
-					temp = "<font color = #666633>-% New ID assigned: \"[id]\" %-</font>"
+					temp = "<font color = #666633>-% New ID assigned: \"[id]\" %-</font color>"
 
 			if("network")
 				var/newnet = input(usr, "Specify the new network for this machine. This will break all current links.", src, network) as null|text
 				if(newnet && canAccess(usr))
 
 					if(length(newnet) > 15)
-						temp = "<font color = #666633>-% Too many characters in new network tag %-</font>"
+						temp = "<font color = #666633>-% Too many characters in new network tag %-</font color>"
 
 					else
 						for(var/obj/machinery/telecomms/T in links)
@@ -321,7 +321,7 @@
 
 						network = newnet
 						links = list()
-						temp = "<font color = #666633>-% New network tag assigned: \"[network]\" %-</font>"
+						temp = "<font color = #666633>-% New network tag assigned: \"[network]\" %-</font color>"
 
 
 			if("freq")
@@ -331,21 +331,21 @@
 						newfreq *= 10 // shift the decimal one place
 					if(!(newfreq in freq_listening) && newfreq < 10000)
 						freq_listening.Add(newfreq)
-						temp = "<font color = #666633>-% New frequency filter assigned: \"[newfreq] GHz\" %-</font>"
+						temp = "<font color = #666633>-% New frequency filter assigned: \"[newfreq] GHz\" %-</font color>"
 
 	if(href_list["delete"])
 
 		// changed the layout about to workaround a pesky runtime -- Doohl
 
 		var/x = text2num(href_list["delete"])
-		temp = "<font color = #666633>-% Removed frequency filter [x] %-</font>"
+		temp = "<font color = #666633>-% Removed frequency filter [x] %-</font color>"
 		freq_listening.Remove(x)
 
 	if(href_list["unlink"])
 
 		if(text2num(href_list["unlink"]) <= length(links))
 			var/obj/machinery/telecomms/T = links[text2num(href_list["unlink"])]
-			temp = "<font color = #666633>-% Removed \ref[T] [T.name] from linked entities. %-</font>"
+			temp = "<font color = #666633>-% Removed \ref[T] [T.name] from linked entities. %-</font color>"
 
 			// Remove link entries from both T and src.
 
@@ -363,20 +363,20 @@
 				if(!(P.buffer in src.links))
 					src.links.Add(P.buffer)
 
-				temp = "<font color = #666633>-% Successfully linked with \ref[P.buffer] [P.buffer.name] %-</font>"
+				temp = "<font color = #666633>-% Successfully linked with \ref[P.buffer] [P.buffer.name] %-</font color>"
 
 			else
-				temp = "<font color = #666633>-% Unable to acquire buffer %-</font>"
+				temp = "<font color = #666633>-% Unable to acquire buffer %-</font color>"
 
 	if(href_list["buffer"])
 
 		P.buffer = src
-		temp = "<font color = #666633>-% Successfully stored \ref[P.buffer] [P.buffer.name] in buffer %-</font>"
+		temp = "<font color = #666633>-% Successfully stored \ref[P.buffer] [P.buffer.name] in buffer %-</font color>"
 
 
 	if(href_list["flush"])
 
-		temp = "<font color = #666633>-% Buffer successfully flushed. %-</font>"
+		temp = "<font color = #666633>-% Buffer successfully flushed. %-</font color>"
 		P.buffer = null
 
 	src.Options_Topic(href, href_list)

@@ -264,6 +264,9 @@
 	maim_clone(H)
 	H.Paralyse(4)
 
+	//Here let's calculate their health so the pod doesn't immediately eject them!!!
+	H.updatehealth()
+
 	if(grab_ghost_when == CLONER_FRESH_CLONE)
 		clonemind.transfer_to(H)
 		H.ckey = R.ckey
@@ -552,7 +555,7 @@
 		qdel(i)
 	missing_organs.Cut()
 
-	H.setCloneLoss(CLONE_INITIAL_DAMAGE, FALSE)
+	H.setCloneLoss(CLONE_INITIAL_DAMAGE)
 	H.setBrainLoss(BRAIN_INITIAL_DAMAGE)
 
 	for(var/o in H.internal_organs)
@@ -575,7 +578,6 @@
 		missing_organs += I
 
 	organs_number = LAZYLEN(missing_organs)
-	H.updatehealth()
 
 /obj/machinery/clonepod/proc/check_brine()
 	// Clones are in a pickled bath of mild chemicals, keeping

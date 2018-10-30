@@ -102,9 +102,9 @@
 				adjustFireLoss(-10)
 				adjustCloneLoss(-10)
 
-				updatehealth("slime feeding")
+				updatehealth()
 				if(Victim)
-					Victim.updatehealth("slime feeding")
+					Victim.updatehealth()
 
 			sleep(rand(15,45))
 

@@ -7,7 +7,7 @@
 	anchored = 1
 	icon = 'icons/obj/cooking_machines.dmi'
 	icon_state = "icecream_vat"
-	use_power = IDLE_POWER_USE
+	use_power = 1
 	idle_power_usage = 20
 	var/obj/item/reagent_containers/glass/beaker = null
 	var/useramount = 15	//Last used amount

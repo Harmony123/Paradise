@@ -7,7 +7,7 @@
 	var/mob/camera/blob/overmind = null
 
 /obj/structure/blob/storage/update_icon()
-	if(health <= 0 && !QDELETED(src))
+	if(health <= 0)
 		overmind.max_blob_points -= 50
 		qdel(src)
 

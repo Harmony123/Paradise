@@ -522,10 +522,10 @@ var/const/access_trade_sol = 160
 		rank = src:rank
 		assignment = src:assignment
 
-	if( rank in GLOB.joblist )
+	if( rank in joblist )
 		return rank
 
-	if( assignment in GLOB.joblist )
+	if( assignment in joblist )
 		return assignment
 
 	return "Unknown"
@@ -587,7 +587,7 @@ proc/FindNameFromID(var/mob/living/carbon/human/H)
 			return ID.registered_name
 
 proc/get_all_job_icons() //For all existing HUD icons
-	return GLOB.joblist + list("Prisoner")
+	return joblist + list("Prisoner")
 
 /obj/proc/GetJobName() //Used in secHUD icon generation
 	var/obj/item/card/id/I

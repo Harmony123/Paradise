@@ -11,7 +11,7 @@ Note: Must be placed west/left of and R&D console to function.
 	name = "Protolathe"
 	desc = "Converts raw materials into useful objects."
 	icon_state = "protolathe"
-	container_type = OPENCONTAINER
+	flags = OPENCONTAINER
 
 	var/efficiency_coeff
 

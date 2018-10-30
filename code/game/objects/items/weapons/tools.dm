@@ -120,7 +120,7 @@
 	name = "screwdriver"
 	desc = "You can be totally screwy with this."
 	icon = 'icons/obj/tools.dmi'
-	icon_state = "screwdriver_map"
+	icon_state = null
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
 	force = 5
@@ -133,7 +133,6 @@
 	hitsound = 'sound/weapons/bladeslice.ogg'
 	usesound = 'sound/items/Screwdriver.ogg'
 	toolspeed = 1
-	var/random_color = TRUE //if the screwdriver uses random coloring
 
 /obj/item/screwdriver/nuke
 	name = "screwdriver"
@@ -147,7 +146,7 @@
 
 /obj/item/screwdriver/New(loc, var/param_color = null)
 	..()
-	if(random_color)
+	if(!icon_state)
 		if(!param_color)
 			param_color = pick("red","blue","pink","brown","green","cyan","yellow")
 		icon_state = "screwdriver_[param_color]"
@@ -169,7 +168,6 @@
 	desc = "A screwdriver made of brass. The handle feels freezing cold."
 	icon_state = "screwdriver_brass"
 	toolspeed = 0.5
-	random_color = FALSE
 
 /obj/item/screwdriver/abductor
 	name = "alien screwdriver"
@@ -178,7 +176,6 @@
 	icon_state = "screwdriver"
 	usesound = 'sound/items/PSHOOM.ogg'
 	toolspeed = 0.1
-	random_color = FALSE
 
 /obj/item/screwdriver/power
 	name = "hand drill"
@@ -195,7 +192,6 @@
 	hitsound = 'sound/items/drill_hit.ogg'
 	usesound = 'sound/items/drill_use.ogg'
 	toolspeed = 0.25
-	random_color = FALSE
 
 /obj/item/screwdriver/power/suicide_act(mob/user)
 	user.visible_message("<span class='suicide'>[user] is putting [src] to [user.p_their()] temple. It looks like [user.p_theyre()] trying to commit suicide!</span>")
@@ -219,7 +215,7 @@
 	name = "wirecutters"
 	desc = "This cuts wires."
 	icon = 'icons/obj/tools.dmi'
-	icon_state = "cutters"
+	icon_state = null
 	flags = CONDUCT
 	slot_flags = SLOT_BELT
 	force = 6
@@ -233,11 +229,10 @@
 	usesound = 'sound/items/Wirecutter.ogg'
 	sharp = 1
 	toolspeed = 1
-	var/random_color = TRUE
 
 /obj/item/wirecutters/New(loc, param_color = null)
 	..()
-	if(random_color)
+	if(!icon_state)
 		if(!param_color)
 			param_color = pick("yellow", "red")
 		icon_state = "cutters_[param_color]"
@@ -263,7 +258,6 @@
 	desc = "A pair of wirecutters made of brass. The handle feels freezing cold to the touch."
 	icon_state = "cutters_brass"
 	toolspeed = 0.5
-	random_color = FALSE
 
 /obj/item/wirecutters/abductor
 	name = "alien wirecutters"
@@ -272,7 +266,6 @@
 	icon_state = "cutters"
 	toolspeed = 0.1
 	origin_tech = "materials=5;engineering=4;abductor=3"
-	random_color = FALSE
 
 /obj/item/wirecutters/cyborg
 	name = "wirecutters"
@@ -288,7 +281,6 @@
 	materials = list(MAT_METAL=150,MAT_SILVER=50,MAT_TITANIUM=25)
 	usesound = 'sound/items/jaws_cut.ogg'
 	toolspeed = 0.25
-	random_color = FALSE
 
 /obj/item/wirecutters/power/suicide_act(mob/user)
 	user.visible_message("<span class='suicide'>[user] is wrapping \the [src] around [user.p_their()] neck. It looks like [user.p_theyre()] trying to rip [user.p_their()] head off!</span>")
@@ -407,7 +399,6 @@
 	if(ishuman(M))
 		var/mob/living/carbon/human/H = M
 		var/obj/item/organ/external/S = H.bodyparts_by_name[user.zone_sel.selecting]
-
 		if(!S)
 			return
 
@@ -458,9 +449,6 @@
 				E.heal_damage(rembrute,0,0,1)
 				rembrute = nrembrute
 				user.visible_message("<span class='alert'>\The [user] patches some dents on \the [M]'s [E.name] with \the [src].</span>")
-			if(H.bleed_rate && H.isSynthetic())
-				H.bleed_rate = 0
-				user.visible_message("<span class='alert'>\The [user] patches some leaks on [M] with \the [src].</span>")
 			return 1
 	else
 		return ..()

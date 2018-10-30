@@ -11,8 +11,7 @@
 */
 /mob/living/silicon/ai/DblClickOn(var/atom/A, params)
 	if(client.click_intercept)
-		// Not doing a click intercept here, because otherwise we double-tap with the `ClickOn` proc.
-		// But we return here since we don't want to do regular dblclick handling
+		client.click_intercept.InterceptClickOn(src, params, A)
 		return
 
 	if(control_disabled || stat) return
@@ -31,14 +30,6 @@
 	if(next_click > world.time)
 		return
 	changeNext_click(1)
-
-	if(multicam_on)
-		var/turf/T = get_turf(A)
-		if(T)
-			for(var/obj/screen/movable/pic_in_pic/ai/P in T.vis_locs)
-				if(P.ai == src)
-					P.Click(params)
-					break
 
 	if(control_disabled || stat)
 		return

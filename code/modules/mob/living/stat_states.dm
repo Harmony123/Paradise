@@ -10,8 +10,7 @@
 	log_game("[key_name(src)] fell unconscious at [atom_loc_line(get_turf(src))]")
 	stat = UNCONSCIOUS
 	if(updating)
-		update_sight()
-		update_blind_effects()
+	// 	update_blind_effects()
 		update_canmove()
 	return 1
 
@@ -25,8 +24,7 @@
 	log_game("[key_name(src)] woke up at [atom_loc_line(get_turf(src))]")
 	stat = CONSCIOUS
 	if(updating)
-		update_sight()
-		update_blind_effects()
+		// update_blind_effects()
 		update_canmove()
 	return 1
 
@@ -47,16 +45,13 @@
 	create_attack_log("<font color='red'>Came back to life at [atom_loc_line(get_turf(src))]</font>")
 	log_game("[key_name(src)] came back to life at [atom_loc_line(get_turf(src))]")
 	stat = CONSCIOUS
-	GLOB.dead_mob_list -= src
-	GLOB.living_mob_list += src
-	if(mind)
-		GLOB.respawnable_list -= src
+	dead_mob_list -= src
+	living_mob_list += src
 	timeofdeath = null
 	if(updating)
 		update_canmove()
-		update_blind_effects()
-		update_sight()
-		updatehealth("update revive")
+	// update_blind_effects()
+	updatehealth()
 
 	for(var/s in ownedSoullinks)
 		var/datum/soullink/S = s

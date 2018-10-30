@@ -52,7 +52,7 @@
 // After docking //
 /atom/proc/postDock(obj/docking_port/S1)
 	if(smooth)
-		queue_smooth(src)
+		smooth_icon(src)
 
 /obj/machinery/door/airlock/postDock(obj/docking_port/stationary/S1)
 	. = ..()

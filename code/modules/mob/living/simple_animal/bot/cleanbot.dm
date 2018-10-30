@@ -187,7 +187,9 @@
 	if(prob(50))
 		new /obj/item/robot_parts/l_arm(Tsec)
 
-	do_sparks(3, 1, src)
+	var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+	s.set_up(3, 1, src)
+	s.start()
 	..()
 
 /obj/machinery/bot_core/cleanbot

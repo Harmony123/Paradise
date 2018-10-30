@@ -119,7 +119,7 @@
 
 /obj/item/clothing/suit/armor/abductor/Destroy()
 	processing_objects.Remove(src)
-	for(var/obj/machinery/abductor/console/C in GLOB.machines)
+	for(var/obj/machinery/abductor/console/C in machines)
 		if(C.vest == src)
 			C.vest = null
 			break
@@ -491,7 +491,7 @@ Congratulations! You are now trained for invasive xenobiology research!"}
 
 	if(ishuman(L))
 		var/mob/living/carbon/human/H = L
-		H.forcesay(GLOB.hit_appends)
+		H.forcesay(hit_appends)
 
 	add_attack_logs(user, L, "Stunned with [src]")
 
@@ -561,7 +561,9 @@ Congratulations! You are now trained for invasive xenobiology research!"}
 /obj/item/restraints/handcuffs/energy/used/dropped(mob/user)
 	user.visible_message("<span class='danger'>[user]'s [src] break in a discharge of energy!</span>", \
 							"<span class='userdanger'>[user]'s [src] break in a discharge of energy!</span>")
-	do_sparks(4, 0, user.loc)
+	var/datum/effect_system/spark_spread/S = new
+	S.set_up(4,0,user.loc)
+	S.start()
 	. = ..()
 
 /obj/item/abductor_baton/examine(mob/user)
@@ -670,7 +672,7 @@ Congratulations! You are now trained for invasive xenobiology research!"}
 
 // Operating Table / Beds / Lockers
 
-/obj/structure/bed/abductor
+/obj/structure/stool/bed/abductor
 	name = "resting contraption"
 	desc = "This looks similar to contraptions from earth. Could aliens be stealing our technology?"
 	icon = 'icons/obj/abductor.dmi'
@@ -734,8 +736,6 @@ Congratulations! You are now trained for invasive xenobiology research!"}
 	icon_state = "bed"
 	no_icon_updates = 1 //no icon updates for this; it's static.
 	injected_reagents = list("corazone","spaceacillin")
-	reagent_target_amount = 31 //the patient needs at least 30u of spaceacillin to prevent necrotization.
-	inject_amount = 10
 
 /obj/structure/closet/abductor
 	name = "alien locker"

@@ -4,11 +4,11 @@
 	var/team = 0
 
 /obj/machinery/abductor/New()
-	GLOB.abductor_equipment.Add(src)
+	abductor_equipment.Add(src)
 	..()
 
 /obj/machinery/abductor/Destroy()
-	GLOB.abductor_equipment.Remove(src)
+	abductor_equipment.Remove(src)
 	return ..()
 
 //Console
@@ -152,17 +152,17 @@
 
 /obj/machinery/abductor/console/proc/Link_Abduction_Equipment() // these must all be explicitly `in machines` or they will not properly link.
 
-	for(var/obj/machinery/abductor/pad/p in GLOB.abductor_equipment)
+	for(var/obj/machinery/abductor/pad/p in abductor_equipment)
 		if(p.team == team)
 			pad = p
 			break
 
-	for(var/obj/machinery/abductor/experiment/e in GLOB.abductor_equipment)
+	for(var/obj/machinery/abductor/experiment/e in abductor_equipment)
 		if(e.team == team)
 			experiment = e
 			e.console = src
 
-	for(var/obj/machinery/computer/camera_advanced/abductor/c in GLOB.abductor_equipment)
+	for(var/obj/machinery/computer/camera_advanced/abductor/c in abductor_equipment)
 		if(c.team == team)
 			camera = c
 			c.console = src
@@ -194,7 +194,7 @@
 	if(vest == V)
 		return FALSE
 
-	for(var/obj/machinery/abductor/console/C in GLOB.machines)
+	for(var/obj/machinery/abductor/console/C in machines)
 		if(C.vest == V)
 			C.vest = null
 			break

@@ -16,8 +16,6 @@
 	levelupdate()
 	visibilityChanged()
 
-/turf/simulated/proc/break_tile()
-
 /turf/simulated/proc/burn_tile()
 
 /turf/simulated/proc/MakeSlippery(wet_setting = TURF_WET_WATER) // 1 = Water, 2 = Lube, 3 = Ice
@@ -85,6 +83,6 @@
 
 /turf/simulated/ChangeTurf(var/path)
 	. = ..()
-	queue_smooth_neighbors(src)
+	smooth_icon_neighbors(src)
 
 /turf/simulated/proc/is_shielded()

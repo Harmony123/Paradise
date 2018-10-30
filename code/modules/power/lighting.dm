@@ -66,7 +66,7 @@
 				src.icon_state = "tube-construct-stage1"
 			if("bulb")
 				src.icon_state = "bulb-construct-stage1"
-		new /obj/item/stack/cable_coil(get_turf(src.loc), 1, paramcolor = COLOR_RED)
+		new /obj/item/stack/cable_coil(get_turf(src.loc), 1, COLOR_RED)
 		user.visible_message("[user.name] removes the wiring from [src].", \
 			"You remove the wiring from [src].", "You hear a noise.")
 		playsound(loc, W.usesound, 100, 1)
@@ -133,7 +133,7 @@
 	desc = "A lighting fixture."
 	anchored = 1
 	layer = 5  					// They were appearing under mobs which is a little weird - Ostaf
-	use_power = ACTIVE_POWER_USE
+	use_power = 2
 	idle_power_usage = 2
 	active_power_usage = 20
 	power_channel = LIGHT //Lights are calc'd via area so they dont need to be in the machine list
@@ -258,10 +258,10 @@
 					on = 0
 					set_light(0)
 			else
-				use_power = ACTIVE_POWER_USE
+				use_power = 2
 				set_light(BR, PO, CO)
 	else
-		use_power = IDLE_POWER_USE
+		use_power = 1
 		set_light(0)
 
 	active_power_usage = (brightness_range * 10)
@@ -386,7 +386,9 @@
 
 		to_chat(user, "You stick \the [W] into the light socket!")
 		if(has_power() && (W.flags & CONDUCT))
-			do_sparks(3, 1, src)
+			var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+			s.set_up(3, 1, src)
+			s.start()
 			if(prob(75))
 				electrocute_mob(user, get_area(src), src, rand(0.7,1.0))
 
@@ -394,7 +396,7 @@
 // returns whether this light has power
 // true if area has power and lightswitch is on
 /obj/machinery/light/proc/has_power()
-	var/area/A = get_area(src)
+	var/area/A = src.loc.loc
 	return A.lightswitch && A.power_light
 
 /obj/machinery/light/proc/flicker(var/amount = rand(10, 20))
@@ -482,7 +484,7 @@
 
 
 	// create a light tube/bulb item and put it in the user's hand
-	var/obj/item/light/L = new light_type(get_turf(user))
+	var/obj/item/light/L = new light_type()
 	L.status = status
 	L.rigged = rigged
 	L.brightness_range = brightness_range
@@ -497,7 +499,7 @@
 	L.update()
 	L.add_fingerprint(user)
 
-	user.put_in_hands(L)	//puts it in our active hand
+	user.put_in_active_hand(L)	//puts it in our active hand
 
 	status = LIGHT_EMPTY
 	update()
@@ -538,7 +540,9 @@
 		if(status == LIGHT_OK || status == LIGHT_BURNED)
 			playsound(src.loc, 'sound/effects/Glasshit.ogg', 75, 1)
 		if(on || overloaded)
-			do_sparks(3, 1, src)
+			var/datum/effect_system/spark_spread/s = new /datum/effect_system/spark_spread
+			s.set_up(3, 1, src)
+			s.start()
 	status = LIGHT_BROKEN
 	update()
 
@@ -572,7 +576,7 @@
 
 /obj/machinery/light/blob_act()
 	if(prob(75))
-		qdel(src)
+		broken()
 
 
 // timed process
@@ -580,9 +584,8 @@
 
 // called when area power state changes
 /obj/machinery/light/power_change()
-	var/area/A = get_area(src)
-	if(A)
-		seton(A.lightswitch && A.power_light)
+	var/area/A = get_area_master(src)
+	if(A) seton(A.lightswitch && A.power_light)
 
 // called when on fire
 

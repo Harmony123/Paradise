@@ -19,8 +19,7 @@
 	possible_transfer_amounts = list(5)
 	volume = 5
 	can_be_placed_into = null
-	flags = NOBLUDGEON
-	container_type = OPENCONTAINER
+	flags = OPENCONTAINER | NOBLUDGEON
 	var/wipespeed = 30
 
 /obj/item/reagent_containers/glass/rag/attack(atom/target as obj|turf|area, mob/user as mob , flag)

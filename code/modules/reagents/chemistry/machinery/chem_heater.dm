@@ -4,7 +4,7 @@
 	anchored = 1
 	icon = 'icons/obj/chemical.dmi'
 	icon_state = "mixer0b"
-	use_power = IDLE_POWER_USE
+	use_power = 1
 	idle_power_usage = 40
 	var/obj/item/reagent_containers/beaker = null
 	var/desired_temp = 300

@@ -18,10 +18,11 @@
 				qdel(src.cable)
 				cable = null
 
-/mob/living/silicon/pai/updatehealth(reason = "none given")
+/mob/living/silicon/pai/updatehealth()
 	if(status_flags & GODMODE)
 		health = 100
 		stat = CONSCIOUS
 	else
 		health = 100 - getBruteLoss() - getFireLoss()
-		update_stat("updatehealth([reason])")
+	if(health <= 0)
+		death(0)

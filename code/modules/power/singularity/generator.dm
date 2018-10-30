@@ -6,7 +6,7 @@
 	icon_state = "TheSingGen"
 	anchored = 0
 	density = 1
-	use_power = NO_POWER_USE
+	use_power = 0
 	var/energy = 0
 	var/creation_type = /obj/singularity
 

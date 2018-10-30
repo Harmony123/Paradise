@@ -143,8 +143,7 @@
 	fire_sound = 'sound/weapons/laser.ogg'
 	usesound = 'sound/items/Welder.ogg'
 	toolspeed = 1
-	container_type = OPENCONTAINER
-	flags = CONDUCT
+	flags = CONDUCT | OPENCONTAINER
 	attack_verb = list("attacked", "slashed", "cut", "sliced")
 	force = 12
 	sharp = 1
@@ -161,9 +160,8 @@
 		S.use(1)
 		power_supply.give(1000)
 		to_chat(user, "<span class='notice'>You insert [A] in [src], recharging it.</span>")
-	else if(istype(A, /obj/item/stack/ore/plasma))
-		var/obj/item/stack/ore/S = A
-		S.use(1)
+	else if(istype(A, /obj/item/ore/plasma))
+		qdel(A)
 		power_supply.give(500)
 		to_chat(user, "<span class='notice'>You insert [A] in [src], recharging it.</span>")
 	else

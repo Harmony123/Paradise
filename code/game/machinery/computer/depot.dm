@@ -389,7 +389,7 @@
 
 /obj/machinery/computer/syndicate_depot/teleporter/proc/choosetarget()
 	var/list/eligible_turfs = list()
-	for(var/obj/item/radio/beacon/R in GLOB.beacons)
+	for(var/obj/item/radio/beacon/R in beacons)
 		var/turf/T = get_turf(R)
 		if(!is_station_level(T.z))
 			continue

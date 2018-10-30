@@ -1,8 +1,6 @@
 /mob/living/carbon/slime/death(gibbed)
-	// Only execute the below if we successfully died
-	. = ..()
-	if(!.)
-		return FALSE
+	if(stat == DEAD)
+		return
 	if(!gibbed)
 		if(is_adult)
 			var/mob/living/carbon/slime/M = new /mob/living/carbon/slime(loc)
@@ -17,5 +15,13 @@
 			return
 		else
 			visible_message("<b>The [name]</b> seizes up and falls limp...")
+	stat = DEAD
 	icon_state = "[colour] baby slime dead"
-	overlays.Cut()
+	overlays.len = 0
+
+	update_canmove()
+
+	if(ticker && ticker.mode)
+		ticker.mode.check_win()
+
+	return ..(gibbed)

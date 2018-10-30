@@ -67,7 +67,7 @@ var/list/diseases = subtypesof(/datum/disease)
 
 /datum/disease/Destroy()
 	affected_mob = null
-	GLOB.active_diseases.Remove(src)
+	active_diseases.Remove(src)
 	return ..()
 
 /datum/disease/proc/stage_act()

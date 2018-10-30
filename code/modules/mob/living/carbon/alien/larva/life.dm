@@ -11,10 +11,12 @@
 	updatehealth()
 
 	if(stat == DEAD)	//DEAD. BROWN BREAD. SWIMMING WITH THE SPESS CARP
+		blinded = 1
 		SetSilence(0)
 	else				//ALIVE. LIGHTS ARE ON
 		if(health < -25 || !get_int_organ(/obj/item/organ/internal/brain))
 			death()
+			blinded = 1
 			SetSilence(0)
 			return 1
 
@@ -28,8 +30,10 @@
 			Paralyse(3)
 
 		if(paralysis)
+			blinded = 1
 			stat = UNCONSCIOUS
 		else if(sleeping)
+			blinded = 1
 			stat = UNCONSCIOUS
 			if(prob(10) && health)
 				emote("hiss_")
@@ -41,8 +45,12 @@
 		if(move_delay_add > 0)
 			move_delay_add = max(0, move_delay_add - rand(1, 2))
 
-		if(eye_blind)			//blindness, heals slowly over time
+		//Eyes
+		if(disabilities & BLIND)	//disabled-blind, doesn't get better on its own
+			blinded = 1
+		else if(eye_blind)			//blindness, heals slowly over time
 			AdjustEyeBlind(-1)
+			blinded = 1
 		else if(eye_blurry)	//blurry eyes heal slowly
 			AdjustEyeBlurry(-1)
 

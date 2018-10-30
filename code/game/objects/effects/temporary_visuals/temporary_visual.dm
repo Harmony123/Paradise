@@ -2,7 +2,7 @@
 /obj/effect/temp_visual
 	anchored = 1
 	layer = ABOVE_MOB_LAYER
-	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	mouse_opacity = 0
 	var/duration = 10
 	var/randomdir = TRUE
 
