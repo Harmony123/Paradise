@@ -1632,23 +1632,6 @@
 //MELTYAS LENNOX SUITS ENDS HERE
 
 
-
-
-/obj/item/hand_tele/ryzor
-	name = "RyzorCo. Experimental Hand tele"
-	desc = "An experimental portable item using blue-space technology. It has a grumpy face."
-	icon = 'icons/obj/hispania_custom_items.dmi'
-	icon_state = "hand_tele_ry"
-	item_state = "electronic"
-	throwforce = 0
-	w_class = WEIGHT_CLASS_SMALL
-	throw_speed = 3
-	throw_range = 5
-	materials = list(MAT_METAL=10000)
-	origin_tech = "magnets=3;bluespace=4"
-	armor = list(melee = 0, bullet = 0, laser = 0, energy = 0, bomb = 30, bio = 0, rad = 0)
-
-
 // Funci�n de mierda que detecta cuando un pj entra a la estaci�n
 /mob/new_player/proc/start_player(mob/user)
 	var/mob/living/carbon/human/target = user
@@ -1671,4 +1654,3 @@
 	//                    ---
 
 	return
-
