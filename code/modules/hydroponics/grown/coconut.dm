@@ -41,7 +41,7 @@
 /obj/item/grown/coconut/attackby(obj/item/W, mob/user, params)
 	if(is_sharp(W))
 		user.show_message("<span class='notice'>You make a [wacked_name] by cutting \the [src] and making some holes on it!</span>", 1)
-//		var/obj/item/reagent_containers/food/drinks/grown/coconut = new coconut_wacked(user.loc, 1)
+		var/obj/item/reagent_containers/food/drinks/grown/coconut = new coconut_wacked(user.loc, 1)
 		qdel(src)
 
 //Here's the drink
